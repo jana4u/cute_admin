@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%= I18n.locale %>" lang="<%= I18n.locale %>">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title><%%= controller.controller_name.humanize %>: <%%= controller.action_name %></title>
+  <%%= stylesheet_link_tag 'cute_admin' %>
+</head>
+<body>
+<%% form_tag '', {:method => "get"} do %>
+  <div><%%= select_tag("locale", options_for_select(LOCALES_AVAILABLE, I18n.locale), { :index => nil, :onchange => 'this.form.submit()'}) %></div>
+<%% end %>
+
+<%% if flash[:notice] -%><p class="flash-notice"><%%= flash[:notice] %></p><%% end -%>
+
+<%%= yield  %>
+
+</body>
+</html>

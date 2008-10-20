@@ -1,0 +1,54 @@
+CuteAdmin
+=========
+
+Generator of simple administration, much better than scaffold.
+Pagination, ordering, search and i18n support included.
+
+Very *experimental* version for Rails edge (2.2).
+
+
+Installation:
+
+git clone git://github.com/jana4u/cute_admin.git
+
+
+Required plugins:
+
+* git://github.com/clemens/localized_dates.git
+* git://github.com/iain/i18n_label.git
+* git://github.com/binarylogic/searchgasm.git
+
+
+Usage:
+
+1. generate models
+2. run `rake db:migrate`
+3. set associations
+4. set acts_as_cute_admin.
+5. run `./script/generate cute_admin Developer --add-associated`
+
+
+Example
+=======
+
+class Country < ActiveRecord::Base
+  acts_as_cute_admin
+  has_many :companies
+end
+
+class Company < ActiveRecord::Base
+  acts_as_cute_admin
+  belongs_to :country
+  has_many :developers
+end
+
+class Developer < ActiveRecord::Base
+  acts_as_cute_admin :display_name => :full_name, :order_by => [:last_name, :first_name]
+  belongs_to :company
+
+  def full_name
+    "#{last_name}, #{first_name}"
+  end
+end
+
+Copyright (c) 2008 Jana4U <jana4u@seznam.cz>, released under the MIT license

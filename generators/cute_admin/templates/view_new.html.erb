@@ -1,0 +1,15 @@
+<div class="admin-container-form">
+<h1><%%= translate(:new, :default => "New {{model}}", :model => <%= class_name %>.human_name, :scope => [:railties, :scaffold]) %></h1>
+
+<div class="admin-control">
+  <div class="back"><%%= link_to translate(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_name %>_path %></div>
+</div>
+
+<%% form_for(@<%= singular_name %>) do |f| %>
+  <%%= f.error_messages %>
+  <%%= render :partial => "form", :locals => {:f => f} %>
+  <div class="admin-submit">
+    <%%= f.submit translate(:create, :default => "Create", :scope => [:railties, :scaffold]) %>
+  </div>
+<%% end %>
+</div>

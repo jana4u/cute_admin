@@ -1,0 +1,57 @@
+<div class="admin-container">
+<h1><%%= translate(:listing, :default => "Listing {{model}}", :model => <%= class_name %>.human_name, :scope => [:railties, :scaffold]) %></h1>
+
+<div class="admin-control">
+  <div class="item-new"><%%= link_to translate(:new_record, :default => "New {{model}}", :model => <%= class_name %>.human_name, :scope => [:railties, :scaffold]), new_<%= singular_name %>_path %></div>
+</div>
+
+<%% content_for :pagination do -%>
+<%% if @search.page_count > 1 -%>
+<%%= pagination_links %>
+<%% end -%>
+<%% end -%>
+
+<%% form_for @search do |f| %>
+<div class="admin-top">
+<%%= yield :pagination %>
+</div>
+
+<div class="admin-main">
+<%%= searchgasm_state %>
+<table class="admin-table-list">
+  <tr class="heading">
+<% for attribute in list_attributes -%>
+    <th class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%%= order_by_link(<%= attribute.order_by %>, {:text => <%= attribute.display_name %>}) %></th>
+<% end -%>
+    <th colspan="4"><%%= link_to translate(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <%= plural_name %>_path %></th>
+  </tr>
+
+<%% f.fields_for @search.conditions do |<%= plural_name %>| -%>
+  <tr class="filters">
+<% for attribute in list_attributes -%>
+    <td class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%= attribute.searchgasm_field(plural_name) %></td>
+<% end -%>
+    <td class="item-filter-button" colspan="4"><%%= <%= plural_name %>.submit translate(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
+  </tr>
+<%% end -%>
+
+<%% for <%= singular_name %> in @<%= plural_name %> %>
+  <tr class="<%%= cycle("light", "dark") %>">
+<% for attribute in list_attributes -%>
+    <td class="<%= attribute.column_class %><%%= cute_admin_ordered_class(<%= attribute.order_by %>) %>"><%%= <%= attribute.formatted_value("#{singular_name}") %> %></td>
+<% end -%>
+    <td class="item-show"><%%= link_to translate(:show, :default => 'Show', :scope => [:railties, :scaffold]), <%= singular_name %> %></td>
+    <td class="item-edit"><%%= link_to translate(:edit, :default => 'Edit', :scope => [:railties, :scaffold]), edit_<%= singular_name %>_path(<%= singular_name %>) %></td>
+    <td class="item-destroy"><%%= link_to translate(:destroy, :default => 'Destroy', :scope => [:railties, :scaffold]), <%= singular_name %>, :confirm => translate(:destroy_confirmation, :default => 'Are you sure?', :record => <%= singular_name %>.display_name, :scope => [:railties, :scaffold]), :method => :delete %></td>
+  </tr>
+<%% end -%>
+</table>
+</div>
+
+<div class="admin-bottom">
+<%%= yield :pagination %>
+<%%= translate(:per_page, :default => 'Per page', :scope => [:railties, :scaffold]) %>: <%%= per_page_select %>
+<%%= translate(:total, :default => 'Total', :scope => [:railties, :scaffold]) %>: <%%= @<%= plural_name %>_count %>
+</div>
+<%% end %>
+</div>
