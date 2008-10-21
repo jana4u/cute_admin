@@ -20,4 +20,15 @@ module CuteAdminHelper
   def nice_boolean(boolean)
     I18n.t("#{boolean}".to_sym, :default => "#{boolean}", :scope => [:railties, :scaffold])
   end
+
+  def pagination_links(options = {})
+    @added_searchgasm_state = true
+    links = page_links(options)
+    @added_searchgasm_state = nil
+    if links
+      "<div class=\"pagination\">#{links}</div>"
+    else
+      return nil
+    end
+  end
 end

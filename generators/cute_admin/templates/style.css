@@ -61,8 +61,8 @@ tr.heading,tr.filters{background-color:#DEDBDE}
 .pagination {padding: 3px;margin: 3px;}
 .pagination a {padding: 2px 5px 2px 5px;margin: 2px;border: 1px solid black;text-decoration: none;color: black;background-color:white;}
 .pagination a:hover, .pagination a:active {border: 1px solid gray;color: white;background-color:gray;}
+.pagination span.disabled {padding: 2px 5px 2px 5px;margin: 2px;border: 1px solid gray;color:gray;background-color: white;}
 .pagination span.current {padding: 2px 5px 2px 5px;margin: 2px;border: 1px solid black;font-weight: bold;background-color: black;color:white;}
-.pagination span.disabled {padding: 2px 5px 2px 5px;margin: 2px;border: 1px solid gray;color:gray;}
 
 .integer-column,.float-column,.decimal-column{text-align:right}
 .boolean-column{text-align:center}
