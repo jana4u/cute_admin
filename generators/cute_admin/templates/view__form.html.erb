@@ -1,14 +1,7 @@
-<% model=model_class -%>
 <div class="admin-main">
-<div class="admin-block">
-<table class="admin-table-form">
+<%% f.field_set <%= class_name %>.human_name do %>
 <% for attribute in form_attributes -%>
-<% association=model.belongs_to_association_by_attribute(attribute.name) -%>
-  <tr>
-    <td class="label-cell"><%%= f.label :<%= attribute.name %> %></td>
-    <td class="content-cell"><% unless association %><%%= f.<%= attribute.field_type %> :<%= attribute.name %> %><% else %><%%= f.select :<%= attribute.name %>, [[translate(:choose, :default => '[ choose ]', :scope => [:railties, :scaffold]), nil]]+<%= association.klass.to_s %>.for_select %><% end %><%%= f.error_message_on :<%= attribute.name %> %></td>
-  </tr>
+<%%= f.<%= attribute.form_field %> %>
 <% end -%>
-</table>
-</div>
+<%% end -%>
 </div>
