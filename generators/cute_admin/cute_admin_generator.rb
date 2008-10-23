@@ -36,7 +36,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     @form_attributes = []
     if model_class.respond_to?(:cute_admin_form_columns)
       for column in model_class.cute_admin_form_columns do
-        attribute = CuteAdminGeneratedAttribute.new(column.name, column.type, class_name, false)
+        attribute = CuteAdminGeneratedAttribute.new(column, class_name, false)
         @form_attributes << attribute
       end
     else
@@ -45,7 +45,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
 
     @list_attributes = []
     for column in model_class.cute_admin_list_columns do
-      attribute = CuteAdminGeneratedAttribute.new(column.name, column.type, class_name, options[:add_associated])
+      attribute = CuteAdminGeneratedAttribute.new(column, class_name, options[:add_associated])
       @list_attributes << attribute
     end
     @show_attributes = @list_attributes.clone
@@ -113,7 +113,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       opt.on("--force-plural",
              "Forces the generation of a plural ModelName") { |v| options[:force_plural] = v }
       opt.on("--add-associated",
-             "Add all fields from associated (belongs_to) models to listing") { |v| options[:add_associated] = v }
+             "Add fields from associated (belongs_to) models to listing") { |v| options[:add_associated] = v }
     end
 
     def scaffold_views

@@ -1,9 +1,9 @@
 class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
   attr_reader :model, :association, :associated_attributes, :parent, :resource_association
 
-  def initialize(name, type, model_name, include_associations = false, parent = nil)
-    @name, @type = name, type.to_sym
-    @column = ActiveRecord::ConnectionAdapters::Column.new(name, nil, @type)
+  def initialize(db_column, model_name, include_associations = false, parent = nil)
+    @column = db_column
+    @name, @type = db_column.name, db_column.type
     unless model_name.kind_of?(ActiveRecord::Reflection::AssociationReflection)
       @model = model_name.to_s.camelize.constantize
     else
@@ -14,7 +14,7 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     @association = model.belongs_to_association_by_attribute(name)
     @associated_attributes = []
     for column in association.klass.cute_admin_list_columns do
-      attr = CuteAdminGeneratedAttribute.new(column.name, column.type, association, false, model)
+      attr = CuteAdminGeneratedAttribute.new(column, association, false, model)
       @associated_attributes << attr
     end if association and include_associations
   end
@@ -34,7 +34,15 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
   end
 
   def display_name
-    @display_name ||= association ? "#{association.klass}.human_name" : "#{model}.human_attribute_name(\"#{name}\")"
+    if association
+      @display_name ||= parent ? "\"#\{#{parent_display_name}} &ndash; #\{#{association.class_name}.human_name}\"" : "#{association.class_name}.human_name"
+    else
+      @display_name ||= parent ? "\"#\{#{parent_display_name}} &ndash; #\{#{model}.human_attribute_name(\"#{name}\")}\"" : "#{model}.human_attribute_name(\"#{name}\")"
+    end
+  end
+
+  def parent_display_name
+    @parent_display_name ||= parent ? "#{resource_association.class_name}.human_name" : ""
   end
 
   def order_by
@@ -94,7 +102,7 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
           "<%= #{search_object_name}.text_field :#{name}_contains %>"
         end
       else
-        "<%= #{search_object_name}.select :#{name}_equals, #{association.klass}.for_select_with_all %>"
+        "<%= #{search_object_name}.select :#{name}_equals, #{association.class_name}.for_select_with_all %>"
       end
     else
       "<% #{search_object_name}.fields_for #{search_object_name}.object.#{resource_association.name} do |#{resource_association.name}| %>#{searchgasm_field(resource_association.name, true)}<% end %>"
