@@ -85,7 +85,7 @@ module ActiveRecord
         end
 
         def to_param
-          @to_param ||= "#{id}-#{display_name.to_slug}"
+          @to_param ||= "#{id}-#{ActiveSupport::Inflector.parameterize(display_name)}"
         end
       end
     end
