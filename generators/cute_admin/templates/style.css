@@ -54,6 +54,7 @@ a:hover { color: #fff; background-color:#000; }
 
 .flash-notice{color:green}
 table.admin-table-list{border-collapse:collapse}
+table.admin-table-list td,table.admin-table-list th{padding: 0 4px;}
 tr.heading,tr.filters{background-color:#DEDBDE}
 .light{background-color:#FFFBFF}
 .dark{background-color:#F7F7F7}

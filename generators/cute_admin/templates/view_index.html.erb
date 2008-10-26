@@ -1,5 +1,5 @@
 <div class="admin-container">
-<h1><%%= translate(:listing, :default => "Listing {{model}}", :model => <%= class_name %>.human_name, :scope => [:railties, :scaffold]) %></h1>
+<h1><%%= translate(:listing, :default => "Listing {{model}}", :model => <%= class_name %>.human_name(:count => 2), :scope => [:railties, :scaffold]) %></h1>
 
 <div class="admin-control">
   <div class="item-new"><%%= link_to translate(:new_record, :default => "New {{model}}", :model => <%= class_name %>.human_name, :scope => [:railties, :scaffold]), new_<%= singular_name %>_path %></div>
