@@ -9,23 +9,26 @@ Experimental version for Rails 2.2.
 
 Installation:
 
-git clone git://github.com/jana4u/cute_admin.git
+In your rails application folder run:
 
+* `./script/plugin install git://github.com/jana4u/cute_admin.git`
 
-Required plugins:
+You have to install following rails plug-ins as well:
 
-* git://github.com/clemens/localized_dates.git
-* git://github.com/iain/i18n_label.git
-* git://github.com/binarylogic/searchgasm.git
+* `./script/plugin install git://github.com/iain/i18n_label.git`
+* `./script/plugin install git://github.com/clemens/localized_dates.git`
+* `./script/plugin install git://github.com/binarylogic/searchgasm.git`
 
 
 Usage:
 
 1. generate models
 2. run `rake db:migrate`
-3. set associations
-4. set acts_as_cute_admin.
-5. run `./script/generate cute_admin Developer --add-associated`
+3. set associations (belongs_to, has_many etc.)
+4. set acts_as_cute_admin
+5. run `rake cute_admin:generate_with_associations`
+   or you can run generator directly for selected model:
+   `./script/generate cute_admin Developer --add-associated`
 
 
 Example
