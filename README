@@ -4,7 +4,7 @@ CuteAdmin
 Generator of simple administration, much better than scaffold.
 Pagination, ordering, search and i18n support included.
 
-Very *experimental* version for Rails edge (2.2).
+Experimental version for Rails 2.2.
 
 
 Installation:
@@ -50,5 +50,9 @@ class Developer < ActiveRecord::Base
     "#{last_name}, #{first_name}"
   end
 end
+
+
+Source code is available at: http://github.com/jana4u/cute_admin
+Source code of sample application is available at: http://github.com/jana4u/cute_admin_example
 
 Copyright (c) 2008 Jana4U <jana4u@seznam.cz>, released under the MIT license
