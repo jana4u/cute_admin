@@ -1,7 +1,7 @@
 module CuteAdminHelper
   def cute_admin_ordered_full_class(order_by, options = {})
-    add_searchgasm_defaults!(options)
-    if searchgasm_ordering_by?(order_by, options)
+    add_searchlogic_defaults!(options)
+    if searchlogic_ordering_by?(order_by, options)
       if options[:search_obj].desc?
         return " ordered-by-desc"
       else
@@ -12,8 +12,8 @@ module CuteAdminHelper
   end
 
   def cute_admin_ordered_class(order_by, options = {})
-    add_searchgasm_defaults!(options)
-    return " column-ordered" if searchgasm_ordering_by?(order_by, options)
+    add_searchlogic_defaults!(options)
+    return " column-ordered" if searchlogic_ordering_by?(order_by, options)
     return nil
   end
 
@@ -22,9 +22,9 @@ module CuteAdminHelper
   end
 
   def pagination_links(options = {})
-    @added_searchgasm_state = true
+    @added_searchlogic_state = true
     links = page_links(options)
-    @added_searchgasm_state = nil
+    @added_searchlogic_state = nil
     if links
       "<div class=\"pagination\">#{links}</div>"
     else

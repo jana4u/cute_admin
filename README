@@ -17,7 +17,7 @@ You have to install following rails plug-ins as well:
 
 * `./script/plugin install git://github.com/iain/i18n_label.git`
 * `./script/plugin install git://github.com/clemens/localized_dates.git`
-* `./script/plugin install git://github.com/binarylogic/searchgasm.git`
+* `./script/plugin install git://github.com/binarylogic/searchlogic.git`
 
 
 Usage:

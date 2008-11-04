@@ -17,7 +17,7 @@
 </div>
 
 <div class="admin-main">
-<%%= searchgasm_state %>
+<%%= searchlogic_state %>
 <table class="admin-table-list">
   <tr class="heading">
 <% for attribute in list_attributes -%>
@@ -29,7 +29,7 @@
 <%% f.fields_for @search.conditions do |<%= plural_name %>| -%>
   <tr class="filters">
 <% for attribute in list_attributes -%>
-    <td class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%= attribute.searchgasm_field(plural_name) %></td>
+    <td class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%= attribute.searchlogic_field(plural_name) %></td>
 <% end -%>
     <td class="item-filter-button" colspan="4"><%%= <%= plural_name %>.submit translate(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
   </tr>

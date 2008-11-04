@@ -93,7 +93,7 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     return existence_check
   end
 
-  def searchgasm_field(search_object_name, parent_checked = false)
+  def searchlogic_field(search_object_name, parent_checked = false)
     if parent_checked or not parent
       unless association
         if type == :boolean
@@ -105,7 +105,7 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
         "<%= #{search_object_name}.select :#{name}_equals, #{association.class_name}.for_select_with_all %>"
       end
     else
-      "<% #{search_object_name}.fields_for #{search_object_name}.object.#{resource_association.name} do |#{resource_association.name}| %>#{searchgasm_field(resource_association.name, true)}<% end %>"
+      "<% #{search_object_name}.fields_for #{search_object_name}.object.#{resource_association.name} do |#{resource_association.name}| %>#{searchlogic_field(resource_association.name, true)}<% end %>"
     end
   end
 
