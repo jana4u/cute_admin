@@ -27,7 +27,7 @@ namespace :cute_admin do
   end
 
   # command line usage: rake cute_admin:generate_with_associations
-  desc "Generates cute_admin for given model or for all models, including belongs_to associations in index. Specify single model with MODEL=x or all models will be processed."
+  desc "Generates cute_admin for given model or for all models, including associations in index. Specify single model with MODEL=x or all models will be processed."
   task :generate_with_associations => :environment do
     if ENV["MODEL"]
       process_models=[ENV["MODEL"]]

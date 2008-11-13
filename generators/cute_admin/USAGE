@@ -13,7 +13,7 @@ Description:
     If there are too many posts they will be paginated.
 
     If you pass '--add-associated' parameter after the model name, then
-    fields from associated (belongs_to) models will be added to index.
+    fields from associated models will be added to index.
     You can use them for ordering and filtering.
 
     If you want to remove all the generated files, run
@@ -21,3 +21,5 @@ Description:
 
 Example:
     ./script/generate cute_admin Post
+
+    ./script/generate cute_admin Post --add-associated

@@ -50,19 +50,19 @@ module ActiveRecord
         end
 
         def for_select(conditions = nil, include = nil)
-          return self.find(:all, :conditions => conditions, :include => include, :order => order_by_columns.join(", ")).map{|x| [x.display_name, x.id]}
+          return find(:all, :conditions => conditions, :include => include, :order => order_by_columns.join(", ")).map{|x| [x.display_name, x.id]}
         end
 
         def belongs_to_association_by_attribute(attribute)
-          return self.reflect_on_all_associations(:belongs_to).find{|x| x.primary_key_name == attribute.to_s}
+          return reflect_on_all_associations(:belongs_to).find{|x| x.primary_key_name == attribute.to_s}
         end
 
-        def belongs_to_association_by_name(association_name)
-          return self.reflect_on_all_associations(:belongs_to).find{|x| x.name == association_name.to_sym}
+        def has_many_associations
+          return reflect_on_all_associations(:has_many)
         end
 
         def association_by_name(association_name)
-          return self.reflect_on_all_associations.find{|x| x.name == association_name.to_sym}
+          return reflect_on_all_associations.find{|x| x.name == association_name.to_sym}
         end
 
         def timestamp_column_names
@@ -75,6 +75,10 @@ module ActiveRecord
 
         def cute_admin_form_columns
           @cute_admin_form_columns ||= cute_admin_list_columns.reject { |c| timestamp_column_names.include?(c.name) }
+        end
+
+        def column_by_name(column_name)
+          columns.detect { |c| c.name == column_name }
         end
       end
 

@@ -9,9 +9,10 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     else
       @model = model_name.klass
       @resource_association = model_name
+      @type = :string if is_has_many_association? and model_name.klass.order_by_columns.size > 1
     end
     @parent = parent
-    @association = model.belongs_to_association_by_attribute(name)
+    @association = model.belongs_to_association_by_attribute(name) unless is_has_many_association?
     @associated_attributes = []
     for column in association.klass.cute_admin_list_columns do
       attr = CuteAdminGeneratedAttribute.new(column, association, false, model)
@@ -34,11 +35,24 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
   end
 
   def display_name
-    if association
-      @display_name ||= parent ? "\"#\{#{parent_display_name}} &ndash; #\{#{association.class_name}.human_name}\"" : "#{association.class_name}.human_name"
-    else
-      @display_name ||= parent ? "\"#\{#{parent_display_name}} &ndash; #\{#{model}.human_attribute_name(\"#{name}\")}\"" : "#{model}.human_attribute_name(\"#{name}\")"
-    end
+    @display_name ||=
+      if association
+        if parent
+          "\"#\{#{parent_display_name}} &ndash; #\{#{association.class_name}.human_name}\""
+        else
+          "#{association.class_name}.human_name"
+        end
+      else
+        if parent
+          if is_has_many_association?
+            "#{model}.human_name(:count => 2)"
+          else
+            "\"#\{#{parent_display_name}} &ndash; #\{#{model}.human_attribute_name(\"#{name}\")}\""
+          end
+        else
+          "#{model}.human_attribute_name(\"#{name}\")"
+        end
+      end
   end
 
   def parent_display_name
@@ -50,7 +64,19 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
   end
 
   def order_columns
-    @order_columns ||= association ? (association.klass.order_by_columns.size > 1 ? "{:#{association.name} => [#{association.klass.order_by_columns.map{|oc| ":#{oc}"}.join(", ")}]}" : "{:#{association.name} => :#{association.klass.order_by_columns.first}}") : ":#{name}"
+    @order_columns ||=
+      if association
+        if association.klass.order_by_columns.size > 1
+          "{:#{association.name} => [#{association.klass.order_by_columns.map{|oc| ":#{oc}"}.join(", ")}]}"
+        else
+          "{:#{association.name} => :#{association.klass.order_by_columns.first}}"
+        end
+      elsif is_has_many_association?
+        order_cols = resource_association.klass.order_by_columns
+        order_cols.size > 1 ? "[#{order_cols.map{|oc| ":#{oc}"}.join(", ")}]" : ":#{order_cols.first}"
+      else
+        ":#{name}"
+      end
   end
 
   def column_class
@@ -61,29 +87,36 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     value_call = value_accessor(object_name)
     existence_check = existence_check(value_call)
     return "h(#{value_call})#{existence_check}" if association
-
-    formatted_value = case type
-    when :integer, :float, :decimal   then "number_with_delimiter(#{value_call})#{existence_check}"
-      #when :datetime, :timestamp        then :datetime_select
-    when :time                        then "#{value_call}.to_s(:time_only)#{existence_check}"
-      #when :date                        then :date_select
-    when :string, :text               then "h(#{value_call})#{existence_check}"
-    when :boolean                     then "nice_boolean(#{value_call})#{existence_check}"
-    else
-      "#{value_call}#{existence_check}"
-    end
-    return formatted_value
+    return "#{output_value_formatted(value_call)}#{existence_check}" unless is_has_many_association?
+    return "#{value_call}#{existence_check}"
   end
 
   def value_accessor(object_name)
-    access_name = association ? "#{association.name}.display_name" : name
-    @value_accessor = parent ? "#{object_name}.#{model.name.underscore}.#{access_name}" : "#{object_name}.#{access_name}"
+    access_name =
+      if association
+        "#{association.name}.display_name"
+      elsif is_has_many_association?
+        resource_association.klass.display_name_method
+      else
+        name
+      end
+    value_accessor =
+      if parent
+        if is_has_many_association?
+          "#{object_name}.#{resource_association.name}.map{|x| #{output_value_formatted("x.#{access_name}")}}.sort.join(\"<br />\")"
+        else
+          "#{object_name}.#{resource_association.name}.#{access_name}"
+        end
+      else
+        "#{object_name}.#{access_name}"
+      end
+    return value_accessor
   end
 
   def existence_check(accessor)
     accessor_parts = accessor.split(".")
     conditions = []
-    if accessor_parts.size > 2
+    if accessor_parts.size > 2 and not is_has_many_association?
       while accessor_parts.size > 2 do
         accessor_parts.pop
         conditions << accessor_parts.join(".")
@@ -119,5 +152,20 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
 
   def select_include_blank
     @select_include_blank ||= column.null ? ", { :include_blank => true }" : ""
+  end
+
+  def is_has_many_association?
+    @has_many_association ||= resource_association ? (resource_association.macro == :has_many) : false
+  end
+
+  def output_value_formatted(value_call)
+    case type
+    when :float, :decimal             then return "number_with_delimiter(#{value_call})"
+    when :time                        then return "#{value_call}.to_s(:time_only)"
+    when :string, :text               then return "h(#{value_call})"
+    when :boolean                     then return "nice_boolean(#{value_call})"
+    else
+      return "#{value_call}"
+    end
   end
 end

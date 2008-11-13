@@ -57,6 +57,9 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
         all_attributes += attribute.associated_attributes
       end
       @list_attributes = all_attributes
+      for has_many_association in model_class.has_many_associations
+        @list_attributes << CuteAdminGeneratedAttribute.new(has_many_association.klass.column_by_name(has_many_association.klass.order_by_columns.first), has_many_association, false, model_class)
+      end
     end
   end
 
@@ -113,7 +116,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       opt.on("--force-plural",
              "Forces the generation of a plural ModelName") { |v| options[:force_plural] = v }
       opt.on("--add-associated",
-             "Add fields from associated (belongs_to) models to listing") { |v| options[:add_associated] = v }
+             "Add fields from associated models to listing") { |v| options[:add_associated] = v }
     end
 
     def scaffold_views
