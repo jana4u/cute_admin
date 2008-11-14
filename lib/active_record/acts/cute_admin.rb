@@ -16,13 +16,14 @@ module ActiveRecord
         # Configuration options are:
         #
         # * +display_name+ - specifies the method called to display data (default: +name+)
-        # * +order_by+ - specifies column(s) for default ordering (default: +name+);
+        # * +order_by+ - specifies column(s) for default ordering (default: same value as +display_name+);
         #   you can pass string or symbol or array of these
         #   Example: <tt>acts_as_cute_admin :display_name => :full_name, :order_by => [:first_name, :last_name]</tt>
         def acts_as_cute_admin(options = {})
-          configuration = { :display_name => :name, :order_by => :name }
+          configuration = { :display_name => :name }
           configuration.update(options) if options.is_a?(Hash)
 
+          configuration[:order_by] = configuration[:display_name] unless configuration[:order_by]
           configuration[:order_by] = [configuration[:order_by]] unless configuration[:order_by].is_a?(Array)
 
           class_eval <<-EOV
