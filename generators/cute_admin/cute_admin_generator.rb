@@ -57,7 +57,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
         all_attributes += attribute.associated_attributes
       end
       @list_attributes = all_attributes
-      for has_many_association in model_class.has_many_associations
+      for has_many_association in model_class.has_many_and_has_and_belongs_to_many_associations
         @list_attributes << CuteAdminGeneratedAttribute.new(has_many_association.klass.column_by_name(has_many_association.klass.order_by_columns.first), has_many_association, false, model_class)
       end
     end

@@ -58,8 +58,8 @@ module ActiveRecord
           return reflect_on_all_associations(:belongs_to).find{|x| x.primary_key_name == attribute.to_s}
         end
 
-        def has_many_associations
-          return reflect_on_all_associations(:has_many)
+        def has_many_and_has_and_belongs_to_many_associations
+          return reflect_on_all_associations(:has_many) + reflect_on_all_associations(:has_and_belongs_to_many)
         end
 
         def association_by_name(association_name)
