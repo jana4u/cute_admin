@@ -50,15 +50,22 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     end
     @show_attributes = @list_attributes.clone
 
-    if options[:add_associated]
-      all_attributes = []
-      for attribute in @list_attributes do
-        all_attributes << attribute
-        all_attributes += attribute.associated_attributes
+    if model_class.custom_list_columns.nil?
+      if options[:add_associated]
+        all_attributes = []
+        for attribute in @list_attributes do
+          all_attributes << attribute
+          all_attributes += attribute.associated_attributes
+        end
+        @list_attributes = all_attributes
+        for has_many_association in model_class.has_many_and_has_and_belongs_to_many_associations
+          @list_attributes << CuteAdminGeneratedAttribute.new(has_many_association.klass.column_by_name(has_many_association.klass.order_by_columns.first), has_many_association, false, model_class)
+        end
       end
-      @list_attributes = all_attributes
-      for has_many_association in model_class.has_many_and_has_and_belongs_to_many_associations
-        @list_attributes << CuteAdminGeneratedAttribute.new(has_many_association.klass.column_by_name(has_many_association.klass.order_by_columns.first), has_many_association, false, model_class)
+    else
+      @list_attributes = []
+      for custom_colum in model_class.custom_list_columns do
+        @list_attributes << create_attribute(model_class, custom_colum)
       end
     end
   end
@@ -145,5 +152,27 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
 
     def show_attributes
       @show_attributes
+    end
+
+    def create_attribute(model_class_param, column_config, full_column_config = nil, resource_association = nil)
+      full_column_config = column_config unless full_column_config
+      if column_config.is_a?(Hash)
+        raise Rails::Generator::UsageError, "Too complicated column specification: #{full_column_config.inspect}." if model_class_param != model_class
+        resource_association = model_class_param.association_by_name(column_config.keys.first)
+        raise Rails::Generator::UsageError, "Model #{model_class_param} does not have association called #{column_config.keys.first}." unless resource_association
+        return create_attribute(resource_association.klass, column_config.values.first, full_column_config, resource_association)
+      else
+        column = model_class_param.column_by_name(column_config)
+        unless column
+          association = model_class_param.association_by_name(column_config)
+          column = model_class_param.column_by_name(association.primary_key_name) if association and association.macro == :belongs_to
+        end
+        if column
+          return CuteAdminGeneratedAttribute.new(column, resource_association || "#{model_class_param}") unless resource_association
+          return CuteAdminGeneratedAttribute.new(column, resource_association, false, "#{model_class_param}")
+        end
+        raise Rails::Generator::UsageError, "Model #{model_class_param} does not have column or association called #{column_config}." if column.nil? and association.nil?
+        return CuteAdminGeneratedAttribute.new(association.klass.column_by_name(association.klass.order_by_columns.first), resource_association || association, false, model_class_param)
+      end
     end
 end

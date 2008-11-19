@@ -41,6 +41,10 @@ module ActiveRecord
               def order_by_columns
                 [#{configuration[:order_by].map{|col| "'#{col}'"}.join(", ")}]
               end
+
+              def custom_list_columns
+                #{configuration[:index_columns] ? configuration[:index_columns].inspect : "nil"}
+              end
             end
 
           EOV
@@ -79,7 +83,7 @@ module ActiveRecord
         end
 
         def column_by_name(column_name)
-          columns.detect { |c| c.name == column_name }
+          columns.detect { |c| c.name == column_name.to_s }
         end
       end
 
