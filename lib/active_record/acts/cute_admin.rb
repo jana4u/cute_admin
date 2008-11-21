@@ -9,22 +9,29 @@ module ActiveRecord
       # Example:
       #
       #   class User < ActiveRecord::Base
-      #     acts_as_cute_admin :display_name => :full_name, :order_by => [:last_name, :first_name]
+      #     acts_as_cute_admin :display_name => :full_name, :order_by => [:last_name, :first_name],
+      #     :index_columns => [:first_name, :last_name, :phone_numbers, :employer, {:employer => :city}]
       #   end
       #
       module ClassMethods
         # Configuration options are:
         #
         # * +display_name+ - specifies the method called to display data (default: +name+)
-        # * +order_by+ - specifies column(s) for default ordering (default: same value as +display_name+);
-        #   you can pass string or symbol or array of these
-        #   Example: <tt>acts_as_cute_admin :display_name => :full_name, :order_by => [:first_name, :last_name]</tt>
+        # * +order_by+ - specifies column(s) for default ordering (default: same value as +display_name+)
+        #   You can pass string or symbol or array of these.
+        # * +index_columns+ - specifies columns displayed in generated index view
+        #   If nothing is set then all columns will be displayed. Expected value is array of attribute names
+        #   or names of associations or the same for associations (specified as hash).
+        #   Nested hashes are not allowed.
+        #   Example: <tt>acts_as_cute_admin :display_name => :full_name, :order_by => [:first_name, :last_name],
+        #   :index_columns => [:first_name, :last_name, :phone_numbers, :employer, {:employer => :city}]</tt>
         def acts_as_cute_admin(options = {})
           configuration = { :display_name => :name }
           configuration.update(options) if options.is_a?(Hash)
 
           configuration[:order_by] = configuration[:display_name] unless configuration[:order_by]
           configuration[:order_by] = [configuration[:order_by]] unless configuration[:order_by].is_a?(Array)
+          configuration[:index_columns] = nil unless configuration[:index_columns].is_a?(Array)
 
           class_eval <<-EOV
             include ActiveRecord::Acts::CuteAdmin::InstanceMethods
