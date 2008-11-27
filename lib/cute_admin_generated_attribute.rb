@@ -6,13 +6,16 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     @name, @type = db_column.name, db_column.type
     unless model_name.kind_of?(ActiveRecord::Reflection::AssociationReflection)
       @model = model_name.to_s.camelize.constantize
+      cute_admin_check(model)
     else
       @model = model_name.klass
+      cute_admin_check(model)
       @resource_association = model_name
       @type = :string if is_association_to_many? and model_name.klass.order_by_columns.size > 1
     end
     @parent = parent
     @association = model.belongs_to_association_by_attribute(name) unless is_association_to_many?
+    cute_admin_check(association.klass) if association
     @associated_attributes = []
     for column in association.klass.cute_admin_list_columns do
       attr = CuteAdminGeneratedAttribute.new(column, association, false, model)
@@ -167,5 +170,11 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     else
       return "#{value_call}"
     end
+  end
+
+  private
+
+  def cute_admin_check(checked_class)
+    raise Rails::Generator::UsageError, "Model #{checked_class} is not set as acts_as_cute_admin." unless checked_class.respond_to?(:custom_list_columns)
   end
 end
