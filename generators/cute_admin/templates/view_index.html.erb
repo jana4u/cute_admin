@@ -5,13 +5,16 @@
   <div class="item-new"><%%= link_to translate(:new_record, :default => "New {{model}}", :model => <%= class_name %>.human_name, :scope => [:railties, :scaffold]), new_<%= singular_name %>_path %></div>
 </div>
 
+<% if options[:use_ajax] %><div id="admin-ajax-container">
+<%%= render :partial => "<%= plural_name %>" -%>
+<!-- BEGIN cut and paste to _<%= plural_name %>.html.erb  --><% end -%>
 <%% content_for :pagination do -%>
 <%% if @search.page_count > 1 -%>
-<%%= pagination_links %>
+<%%= <% if options[:use_ajax] %>remote_<% end %>pagination_links %>
 <%% end -%>
 <%% end -%>
 
-<%% form_for @search do |f| %>
+<%% <% if options[:use_ajax] %>remote_<% end %>form_for @search do |f| %>
 <div class="admin-top">
 <%%= yield :pagination -%>
 </div>
@@ -22,9 +25,9 @@
   <thead>
     <tr class="heading">
 <% for attribute in list_attributes -%>
-      <th class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%%= order_by_link(<%= attribute.order_by %>, {:text => <%= attribute.display_name %>}) %></th>
+      <th class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%%= <% if options[:use_ajax] %>remote_<% end %>order_by_link(<%= attribute.order_by %>, {:text => <%= attribute.display_name %>}) %></th>
 <% end -%>
-      <th colspan="4"><%%= link_to translate(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <%= plural_name %>_path %></th>
+      <th colspan="4"><%%= link_to<% if options[:use_ajax] %>_remote<% end %> translate(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <% if options[:use_ajax] %>:url => <% end %><%= plural_name %>_path %></th>
     </tr>
 
 <%% f.fields_for @search.conditions do |<%= plural_name %>| -%>
@@ -54,8 +57,10 @@
 
 <div class="admin-bottom">
 <%%= yield :pagination -%>
-<div class="admin-per-page"><%%= translate(:per_page, :default => 'Per page', :scope => [:railties, :scaffold]) %>: <%%= per_page_select %></div>
+<div class="admin-per-page"><%%= translate(:per_page, :default => 'Per page', :scope => [:railties, :scaffold]) %>: <%%= <% if options[:use_ajax] %>remote_<% end %>per_page_select %></div>
 <div class="admin-total-pages"><%%= translate(:total, :default => 'Total', :scope => [:railties, :scaffold]) %>: <%%= @<%= plural_name %>_count %></div>
 </div>
 <%% end %>
+<% if options[:use_ajax] %><!-- END cut and paste to _<%= plural_name %>.html.erb  -->
+</div><% end -%>
 </div>

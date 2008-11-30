@@ -21,10 +21,15 @@ module CuteAdminHelper
     I18n.t("#{boolean}".to_sym, :default => "#{boolean}", :scope => [:railties, :scaffold])
   end
 
-  def pagination_links(options = {})
+  def pagination_links(options = {}, remote = false)
     @added_searchlogic_state = true
+    add_remote_defaults!(options) if remote
     links = page_links(options)
     @added_searchlogic_state = nil
     return links
+  end
+
+  def remote_pagination_links(options = {})
+    pagination_links(options, true)
   end
 end

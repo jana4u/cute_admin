@@ -124,6 +124,8 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
              "Forces the generation of a plural ModelName") { |v| options[:force_plural] = v }
       opt.on("--add-associated",
              "Add fields from associated models to listing") { |v| options[:add_associated] = v }
+      opt.on("--use-ajax",
+             "Use ajax in index.") { |v| options[:use_ajax] = v }
     end
 
     def scaffold_views

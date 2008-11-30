@@ -5,6 +5,7 @@
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title><%%= controller.controller_name.singularize.camelize.constantize.human_name(:count => 2) %></title>
   <%%= stylesheet_link_tag 'cute_admin' %>
+  <% if options[:use_ajax] %><%%= javascript_include_tag :defaults %><% end -%>
 </head>
 <body>
 <%% if flash[:notice] -%><p class="flash-notice"><%%= flash[:notice] %></p><%% end -%>
