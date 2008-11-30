@@ -25,10 +25,6 @@ module CuteAdminHelper
     @added_searchlogic_state = true
     links = page_links(options)
     @added_searchlogic_state = nil
-    if links
-      "<div class=\"pagination\">#{links}</div>"
-    else
-      return nil
-    end
+    return links
   end
 end
