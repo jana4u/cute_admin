@@ -164,7 +164,9 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
   def output_value_formatted(value_call)
     case type
     when :float, :decimal             then return "number_with_delimiter(#{value_call})"
-    when :time                        then return "#{value_call}.to_s(:time_only)"
+    when :datetime                    then return "l(#{value_call}, :format => :medium)"
+    when :time                        then return "l(#{value_call}, :format => :time_only)"
+    when :date                        then return "l(#{value_call})"
     when :string, :text               then return "h(#{value_call})"
     when :boolean                     then return "nice_boolean(#{value_call})"
     else
