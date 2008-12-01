@@ -133,7 +133,7 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     if parent_checked or not parent
       unless association
         if type == :boolean
-          "<%= #{search_object_name}.select :#{name}_equals, [[I18n.t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil], [nice_boolean(true), true], [nice_boolean(false), false]] %>"
+          "<%= #{search_object_name}.select :#{name}_equals, booleans_for_select %>"
         else
           "<%= #{search_object_name}.text_field :#{name}_contains %>"
         end

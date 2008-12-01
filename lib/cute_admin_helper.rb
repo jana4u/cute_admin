@@ -18,7 +18,11 @@ module CuteAdminHelper
   end
 
   def nice_boolean(boolean)
-    I18n.t("#{boolean}".to_sym, :default => "#{boolean}", :scope => [:railties, :scaffold])
+    t("#{boolean}".to_sym, :default => "#{boolean}", :scope => [:railties, :scaffold])
+  end
+
+  def booleans_for_select
+    [[t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil], [nice_boolean(true), true], [nice_boolean(false), false]]
   end
 
   def pagination_links(options = {}, remote = false)
