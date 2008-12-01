@@ -7,17 +7,15 @@ class <%= controller_class_name %>Controller < ApplicationController
   def index
     @search = <%= class_name %>.new_search(params[:search])
     @<%= table_name %>, @<%= table_name %>_count = @search.all, @search.count
-<% if options[:use_ajax] %>
-    if request.xhr?
-      render(:update) do |page|
-        page.replace_html "admin-ajax-container", :partial => "<%= table_name %>"
-      end
-      return
-    end<% end -%>
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @<%= table_name %> }
+<% if options[:use_ajax] -%>      format.js   {
+        render(:update) do |page|
+          page.replace_html "admin-ajax-container", :partial => "<%= table_name %>"
+        end
+      }<% end -%>
     end
   end
 
