@@ -17,16 +17,20 @@ module CuteAdminHelper
     return nil
   end
 
-  def cute_datetime(time = Time.now)
-    time ? l(time, :format => :medium) : nil
+  def cute_localized_time_or_date(value, format)
+    value ? l(value, :format => format) : nil
   end
 
-  def cute_time(time = Time.now)
-    time ? l(time, :format => :time_only) : nil
+  def cute_datetime(time = Time.now, format = :medium)
+    cute_localized_time_or_date(time, format)
   end
 
-  def cute_date(date = Date.today)
-    date ? l(date) : nil
+  def cute_time(time = Time.now, format = :time_only)
+    cute_localized_time_or_date(time, format)
+  end
+
+  def cute_date(date = Date.today, format = :default)
+    cute_localized_time_or_date(date, format)
   end
 
   def cute_boolean(boolean)
