@@ -17,12 +17,24 @@ module CuteAdminHelper
     return nil
   end
 
-  def nice_boolean(boolean)
+  def cute_datetime(time = Time.now)
+    time ? l(time, :format => :medium) : nil
+  end
+
+  def cute_time(time = Time.now)
+    time ? l(time, :format => :time_only) : nil
+  end
+
+  def cute_date(date = Date.today)
+    date ? l(date) : nil
+  end
+
+  def cute_boolean(boolean)
     t("#{boolean}".to_sym, :default => "#{boolean}", :scope => [:railties, :scaffold])
   end
 
   def booleans_for_select
-    [[t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil], [nice_boolean(true), true], [nice_boolean(false), false]]
+    [[t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil], [cute_boolean(true), true], [cute_boolean(false), false]]
   end
 
   def pagination_links(options = {}, remote = false)
