@@ -34,6 +34,7 @@ module CuteAdminHelper
   end
 
   def cute_boolean(boolean)
+    return nil if boolean.nil?
     t("#{boolean}".to_sym, :default => "#{boolean}", :scope => [:railties, :scaffold])
   end
 
