@@ -1,6 +1,6 @@
 class CuteAdminGenerator < Rails::Generator::NamedBase
   require 'cute_admin_generated_attribute'
-  default_options :force_plural => false, :add_associated => false
+  default_options :force_plural => false, :add_associated => false, :use_ajax => false
 
   attr_reader   :controller_name,
                 :controller_class_path,
@@ -82,7 +82,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       m.directory(File.join('app/helpers', controller_class_path))
       m.directory(File.join('app/views', controller_class_path, controller_file_name))
       m.directory(File.join('app/views/layouts', controller_class_path))
-      #m.directory(File.join('test/functional', controller_class_path))
+      m.directory(File.join('test/functional', controller_class_path))
       #m.directory(File.join('test/unit', class_path))
       m.directory(File.join('public/stylesheets', class_path))
 
@@ -102,7 +102,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
         'controller.rb', File.join('app/controllers', controller_class_path, "#{controller_file_name}_controller.rb")
       )
 
-      #m.template('functional_test.rb', File.join('test/functional', controller_class_path, "#{controller_file_name}_controller_test.rb"))
+      m.template('functional_test.rb', File.join('test/functional', controller_class_path, "#{controller_file_name}_controller_test.rb"))
       m.template('helper.rb',          File.join('app/helpers',     controller_class_path, "#{controller_file_name}_helper.rb"))
 
       m.route_resources controller_file_name

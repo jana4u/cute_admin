@@ -4,7 +4,9 @@ class <%= controller_class_name %>ControllerTest < ActionController::TestCase
   test "should get index" do
     get :index
     assert_response :success
+    assert_not_nil assigns(:search)
     assert_not_nil assigns(:<%= table_name %>)
+    assert_not_nil assigns(:<%= table_name %>_count)
   end
 
   test "should get new" do
