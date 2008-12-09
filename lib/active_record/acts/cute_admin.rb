@@ -100,8 +100,22 @@ module ActiveRecord
           @display_name ||= send(self.class.display_name_method)
         end
 
+        def display_name_to_param
+          @display_name_to_param ||=
+            if display_name
+              param = ActiveSupport::Inflector.parameterize("#{display_name}")
+              if param.empty?
+                nil
+              else
+                param
+              end
+            else
+              nil
+            end
+        end
+
         def to_param
-          @to_param ||= display_name ? "#{id}-#{ActiveSupport::Inflector.parameterize(display_name)}" : id
+          @to_param ||= display_name_to_param ? "#{super}-#{display_name_to_param}" : super
         end
       end
     end
