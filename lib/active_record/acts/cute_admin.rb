@@ -41,6 +41,10 @@ module ActiveRecord
             end
 
             class << self
+              def acts_as_cute_admin?
+                true
+              end
+
               def display_name_method
                 '#{configuration[:display_name]}'
               end
