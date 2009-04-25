@@ -34,7 +34,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     end
 
     @form_attributes = []
-    if model_class.respond_to?(:custom_list_columns)
+    if model_class.respond_to?("acts_as_cute_admin?")
       for column in model_class.cute_admin_form_columns do
         attribute = CuteAdminGeneratedAttribute.new(column, class_name, false)
         @form_attributes << attribute
