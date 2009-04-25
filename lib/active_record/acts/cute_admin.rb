@@ -56,45 +56,45 @@ module ActiveRecord
               def custom_list_columns
                 #{configuration[:index_columns] ? configuration[:index_columns].inspect : "nil"}
               end
+
+              def for_select_with_all(conditions = nil, include = nil)
+                [[I18n.t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil]] + for_select(conditions, include)
+              end
+
+              def for_select(conditions = nil, include = nil)
+                return find(:all, :conditions => conditions, :include => include, :order => order_by_columns.join(", ")).map{|x| [x.display_name, x.id]}
+              end
+
+              def belongs_to_association_by_attribute(attribute)
+                return reflect_on_all_associations(:belongs_to).find{|x| x.primary_key_name == attribute.to_s}
+              end
+
+              def has_many_and_has_and_belongs_to_many_associations
+                return reflect_on_all_associations(:has_many) + reflect_on_all_associations(:has_and_belongs_to_many)
+              end
+
+              def association_by_name(association_name)
+                return reflect_on_all_associations.find{|x| x.name == association_name.to_sym}
+              end
+
+              def timestamp_column_names
+                @timestamp_column_names ||= %w(created_at created_on updated_at updated_on deleted_at deleted_on)
+              end
+
+              def cute_admin_list_columns
+                @cute_admin_list_columns ||= columns.reject { |c| c.primary || c.name == inheritance_column }
+              end
+
+              def cute_admin_form_columns
+                @cute_admin_form_columns ||= cute_admin_list_columns.reject { |c| timestamp_column_names.include?(c.name) }
+              end
+
+              def column_by_name(column_name)
+                columns.detect { |c| c.name == column_name.to_s }
+              end
             end
 
           EOV
-        end
-
-        def for_select_with_all(conditions = nil, include = nil)
-          [[I18n.t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil]] + for_select(conditions, include)
-        end
-
-        def for_select(conditions = nil, include = nil)
-          return find(:all, :conditions => conditions, :include => include, :order => order_by_columns.join(", ")).map{|x| [x.display_name, x.id]}
-        end
-
-        def belongs_to_association_by_attribute(attribute)
-          return reflect_on_all_associations(:belongs_to).find{|x| x.primary_key_name == attribute.to_s}
-        end
-
-        def has_many_and_has_and_belongs_to_many_associations
-          return reflect_on_all_associations(:has_many) + reflect_on_all_associations(:has_and_belongs_to_many)
-        end
-
-        def association_by_name(association_name)
-          return reflect_on_all_associations.find{|x| x.name == association_name.to_sym}
-        end
-
-        def timestamp_column_names
-          @timestamp_column_names ||= %w(created_at created_on updated_at updated_on deleted_at deleted_on)
-        end
-
-        def cute_admin_list_columns
-          @cute_admin_list_columns ||= columns.reject { |c| c.primary || c.name == inheritance_column }
-        end
-
-        def cute_admin_form_columns
-          @cute_admin_form_columns ||= cute_admin_list_columns.reject { |c| timestamp_column_names.include?(c.name) }
-        end
-
-        def column_by_name(column_name)
-          columns.detect { |c| c.name == column_name.to_s }
         end
       end
 
