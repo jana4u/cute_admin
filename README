@@ -1,30 +1,52 @@
 CuteAdmin
 =========
 
-Generator of simple administration, much better than scaffold.
-Pagination, ordering, search and i18n support included.
+CuteAdmin is Ruby on Rails plug-in. It is mainly generator,
+replacement of classic Ruby on Rails scaffold.
+Generated code allows you immediately to use advanced features
+such as pagination, ordering, search and i18n translations.
 
-Experimental version for Rails 2.2.
+CuteAdmin is based on ActiveRecord extension Searchlogic.
+
+CuteAdmin works fine with Ruby on Rails 2.2 and 2.3.
 
 
-Installation:
+Installation
+============
 
 In your rails application folder run:
 
-* `./script/plugin install git://github.com/jana4u/cute_admin.git`
-
-You have to install following rails plug-ins as well:
-
-* `./script/plugin install git://github.com/iain/i18n_label.git`
-* `./script/plugin install git://github.com/binarylogic/searchlogic.git`
+  `./script/plugin install git://github.com/jana4u/cute_admin.git`
 
 
-Usage:
+CuteAdmin requires Searchlogic. You can use a gem (recommended):
+
+  `sudo gem install searchlogic`
+
+Don't forget to add it to config/environment.rb:
+
+  config.gem "searchlogic"
+
+Or you can install it as a rails plug-in:
+
+  `./script/plugin install git://github.com/binarylogic/searchlogic.git`
+
+
+You should install I18nLabel rails plug-in too:
+
+  `./script/plugin install git://github.com/iain/i18n_label.git`
+
+(I18nLabel is not necessary if you don't want to automaticaly translate labels
+for ActiveRecord attributes using I18n.)
+
+
+Usage
+=====
 
 1. generate models
-2. run `rake db:migrate`
-3. set associations (belongs_to, has_many etc.)
-4. set acts_as_cute_admin
+2. run `rake db:migrate` to create database tables for your models
+3. set associations (belongs_to, has_many etc.) in your models
+4. set acts_as_cute_admin in your models
 5. run `rake cute_admin:generate_with_associations`
    or you can run generator directly for selected model:
    `./script/generate cute_admin Developer --add-associated`
