@@ -2,8 +2,8 @@
 <h1><%%= <%= model_name %>.human_name %></h1>
 
 <div class="admin-control">
-<div class="item-edit"><%%= link_to t(:edit, :default => 'Edit', :scope => [:railties, :scaffold]), edit_<%= singular_name %>_path(@<%= singular_name %>) %></div>
-<div class="back"><%%= link_to t(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_name %>_path %></div>
+<div class="item-edit"><%%= link_to t(:edit, :default => 'Edit', :scope => [:railties, :scaffold]), edit_<%= singular_route %>(@<%= singular_name %>) %></div>
+<div class="back"><%%= link_to t(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_route %> %></div>
 </div>
 
 <div class="admin-main">

@@ -1,11 +1,11 @@
 <div class="admin-container-form">
-<h1><%%= t(:new, :default => "New {{model}}", :model => <%= class_name %>.human_name, :scope => [:railties, :scaffold]) %></h1>
+<h1><%%= t(:new, :default => "New {{model}}", :model => <%= model_name %>.human_name, :scope => [:railties, :scaffold]) %></h1>
 
 <div class="admin-control">
-  <div class="back"><%%= link_to t(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_name %>_path %></div>
+  <div class="back"><%%= link_to t(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_route %> %></div>
 </div>
 
-<%% cute_admin_form_for(@<%= singular_name %>) do |f| %>
+<%% cute_admin_form_for(@<%= singular_name %><% if nested_routes? %>, :url => <%= plural_route %><% end %>) do |f| %>
   <%%= f.error_messages %>
   <%%= render :partial => "form", :locals => {:f => f} %>
   <div class="admin-submit">

@@ -10,7 +10,10 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
                 :controller_class_name,
                 :controller_underscore_name,
                 :controller_singular_name,
-                :controller_plural_name
+                :controller_plural_name,
+                :list_attributes,
+                :form_attributes,
+                :show_attributes
   alias_method  :controller_file_name,  :controller_underscore_name
   alias_method  :controller_table_name, :controller_plural_name
 
@@ -26,7 +29,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
 
     base_name, @controller_class_path, @controller_file_path, @controller_class_nesting, @controller_class_nesting_depth = extract_modules(@controller_name)
     @controller_class_name_without_nesting, @controller_underscore_name, @controller_plural_name = inflect_names(base_name)
-    @controller_singular_name=base_name.singularize
+    @controller_singular_name = base_name.singularize
     if @controller_class_nesting.empty?
       @controller_class_name = @controller_class_name_without_nesting
     else
@@ -36,16 +39,16 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     @form_attributes = []
     if model_class.respond_to?("acts_as_cute_admin?")
       for column in model_class.cute_admin_form_columns do
-        attribute = CuteAdminGeneratedAttribute.new(column, class_name, false)
+        attribute = CuteAdminGeneratedAttribute.new(column, model_name, false)
         @form_attributes << attribute
       end
     else
-      raise Rails::Generator::UsageError, "Model #{class_name} is not set as acts_as_cute_admin."
+      raise Rails::Generator::UsageError, "Model #{model_name} is not set as acts_as_cute_admin."
     end
 
     @list_attributes = []
     for column in model_class.cute_admin_list_columns do
-      attribute = CuteAdminGeneratedAttribute.new(column, class_name, options[:add_associated])
+      attribute = CuteAdminGeneratedAttribute.new(column, model_name, options[:add_associated])
       @list_attributes << attribute
     end
     @show_attributes = @list_attributes.clone
@@ -77,14 +80,12 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       #m.class_collisions(class_path, "#{class_name}")
 
       # Controller, helper, views, test and stylesheets directories.
-      m.directory(File.join('app/models', class_path))
       m.directory(File.join('app/controllers', controller_class_path))
       m.directory(File.join('app/helpers', controller_class_path))
       m.directory(File.join('app/views', controller_class_path, controller_file_name))
-      m.directory(File.join('app/views/layouts', controller_class_path))
+      m.directory(File.join('app/views/layouts'))
       m.directory(File.join('test/functional', controller_class_path))
-      #m.directory(File.join('test/unit', class_path))
-      m.directory(File.join('public/stylesheets', class_path))
+      m.directory(File.join('public/stylesheets'))
 
       for action in scaffold_views
         m.template(
@@ -94,8 +95,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       end
 
       # Layout and stylesheet.
-      #m.template('layout.html.erb', File.join('app/views/layouts', controller_class_path, "#{controller_file_name}.html.erb"))
-      m.template('layout.html.erb', File.join('app/views/layouts', controller_class_path, "cute_admin.html.erb"))
+      m.template('layout.html.erb', 'app/views/layouts/cute_admin.html.erb')
       m.template('style.css', 'public/stylesheets/cute_admin.css')
 
       m.template(
@@ -106,8 +106,6 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       m.template('helper.rb',          File.join('app/helpers',     controller_class_path, "#{controller_file_name}_helper.rb"))
 
       m.route_resources controller_file_name
-
-      #m.dependency 'model', [name] + @args, :collision => :skip
     end
   end
 
@@ -133,27 +131,27 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     end
 
     def model_name
-      class_name.demodulize
+      @model_name ||= class_name.demodulize
     end
 
     def model_class
       begin
-        @model_class ||= class_name.constantize
+        @model_class ||= model_name.constantize
       rescue
-        raise Rails::Generator::UsageError, "Model #{class_name} does not exist. Enter a valid model name or use model generator to create this one."
+        raise Rails::Generator::UsageError, "Model #{model_name} does not exist. Enter a valid model name or use model generator to create this one."
       end
     end
 
-    def list_attributes
-      @list_attributes
+    def nested_routes?
+      @nested_routes ||= !controller_class_path.empty?
     end
 
-    def form_attributes
-      @form_attributes
+    def singular_route
+      @singular_route ||= (controller_class_path + [singular_name, "path"]).compact.join("_")
     end
 
-    def show_attributes
-      @show_attributes
+    def plural_route
+      @plural_route ||= (controller_class_path + [plural_name, "path"]).compact.join("_")
     end
 
     def create_attribute(model_class_param, column_config, full_column_config = nil, resource_association = nil)
