@@ -136,4 +136,71 @@ namespace :cute_admin do
     end
   end
 
+  # command line usage: rake cute_admin:activerecord_i18n_ruby
+  desc "Prints i18n locale for ActiveRecord models and attributes in ruby format. Specify single model with MODEL=x or all models will be processed."
+  task :activerecord_i18n_ruby => :environment do
+    if ENV["MODEL"]
+      models = [ENV["MODEL"]]
+    else
+      models = []
+      Dir.chdir("app/models") do
+        Dir.foreach(".") do |filename|
+          if filename.match(/.*\.rb$/)
+            models << filename.gsub(".rb", "")
+          end
+        end
+      end
+    end
+
+    i18n_models = <<-CODE
+      # ActiveRecord models
+      :models => {
+CODE
+    i18n_attributes = <<-CODE
+      # ActiveRecord model attributes
+      :attributes => {
+CODE
+
+    models.each do |model|
+      begin
+        model_class = model.camelize.constantize
+        model_class = nil unless model_class.respond_to?("acts_as_cute_admin?")
+      rescue
+        model_class = nil
+      end
+
+      if model_class
+        model_underscored = "#{model_class}".underscore
+        i18n_models << <<-CODE
+        :#{model_underscored} => {
+          :one => "",
+          :other => "",
+        },
+CODE
+        i18n_attributes << <<-CODE
+        :#{model_underscored} => {
+CODE
+        model_class.cute_admin_form_columns.each do |column|
+        i18n_attributes << <<-CODE
+          :#{column.name} => "",
+CODE
+        end
+        i18n_attributes << <<-CODE
+        },
+CODE
+      end
+    end
+    i18n_models << <<-CODE
+      },
+CODE
+    i18n_attributes << <<-CODE
+      },
+CODE
+    puts i18n_models
+    puts ""
+    puts i18n_attributes
+    puts ""
+    puts "Simply copy this code to :activerecord section in your i18n locale file (it must be in ruby format, not YAML)."
+  end
 end
+
