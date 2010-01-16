@@ -177,6 +177,6 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
   private
 
   def cute_admin_check(checked_class)
-    raise Rails::Generator::UsageError, "Model #{checked_class} is not set as acts_as_cute_admin." unless checked_class.respond_to?("acts_as_cute_admin?")
+    raise Rails::Generator::UsageError, "Model '#{checked_class}' is not set as acts_as_cute_admin." unless checked_class.respond_to?("acts_as_cute_admin?")
   end
 end

@@ -20,17 +20,8 @@ namespace :cute_admin do
     end
 
     models.each do |model|
-      begin
-        model_class = model.singularize.camelize.demodulize.constantize
-        model_class = nil unless model_class.respond_to?("acts_as_cute_admin?")
-      rescue
-        model_class = nil
-      end
-
-      if model_class
-        Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}"])
-        puts "Created cute_admin for #{model_class}"
-      end
+      Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}"])
+      puts "Created cute_admin for #{model_class}"
     end
   end
 
@@ -54,17 +45,8 @@ namespace :cute_admin do
     end
 
     models.each do |model|
-      begin
-        model_class = model.singularize.camelize.demodulize.constantize
-        model_class = nil unless model_class.respond_to?("acts_as_cute_admin?")
-      rescue
-        model_class = nil
-      end
-
-      if model_class
-        Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--use-ajax"])
-        puts "Created ajax cute_admin for #{model_class}"
-      end
+      Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--use-ajax"])
+      puts "Created ajax cute_admin for #{model_class}"
     end
   end
 
@@ -88,17 +70,8 @@ namespace :cute_admin do
     end
 
     models.each do |model|
-      begin
-        model_class = model.singularize.camelize.demodulize.constantize
-        model_class = nil unless model_class.respond_to?("acts_as_cute_admin?")
-      rescue
-        model_class = nil
-      end
-
-      if model_class
-        Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--add-associated"])
-        puts "Created cute_admin with associations for #{model_class}"
-      end
+      Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--add-associated"])
+      puts "Created cute_admin with associations for #{model_class}"
     end
   end
 
@@ -122,17 +95,8 @@ namespace :cute_admin do
     end
 
     models.each do |model|
-      begin
-        model_class = model.singularize.camelize.demodulize.constantize
-        model_class = nil unless model_class.respond_to?("acts_as_cute_admin?")
-      rescue
-        model_class = nil
-      end
-
-      if model_class
-        Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--add-associated", "--use-ajax"])
-        puts "Created ajax cute_admin with associations for #{model_class}"
-      end
+      Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--add-associated", "--use-ajax"])
+      puts "Created ajax cute_admin with associations for #{model_class}"
     end
   end
 
@@ -164,8 +128,12 @@ CODE
     models.each do |model|
       begin
         model_class = model.camelize.constantize
-        model_class = nil unless model_class.respond_to?("acts_as_cute_admin?")
-      rescue
+        unless model_class.respond_to?("acts_as_cute_admin?")
+          puts "Model '#{model_class}' is not set as acts_as_cute_admin."
+          model_class = nil
+        end
+      rescue NameError
+        puts "Model '#{model}' does not exist. Enter a valid model name or use model generator to create this one."
         model_class = nil
       end
 

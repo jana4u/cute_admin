@@ -43,7 +43,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
         @form_attributes << attribute
       end
     else
-      raise Rails::Generator::UsageError, "Model #{model_name} is not set as acts_as_cute_admin."
+      raise Rails::Generator::UsageError, "Model '#{model_name}' is not set as acts_as_cute_admin."
     end
 
     @list_attributes = []
@@ -137,8 +137,8 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     def model_class
       begin
         @model_class ||= model_name.constantize
-      rescue
-        raise Rails::Generator::UsageError, "Model #{model_name} does not exist. Enter a valid model name or use model generator to create this one."
+      rescue NameError
+        raise Rails::Generator::UsageError, "Model '#{model_name}' does not exist. Enter a valid model name or use model generator to create this one."
       end
     end
 
@@ -159,7 +159,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       if column_config.is_a?(Hash)
         raise Rails::Generator::UsageError, "Too complicated column specification: #{full_column_config.inspect}." if model_class_param != model_class
         resource_association = model_class_param.association_by_name(column_config.keys.first)
-        raise Rails::Generator::UsageError, "Model #{model_class_param} does not have association called #{column_config.keys.first}." unless resource_association
+        raise Rails::Generator::UsageError, "Model '#{model_class_param}' does not have association called '#{column_config.keys.first}'." unless resource_association
         return create_attribute(resource_association.klass, column_config.values.first, full_column_config, resource_association)
       else
         column = model_class_param.column_by_name(column_config)
@@ -171,8 +171,8 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
           return CuteAdminGeneratedAttribute.new(column, resource_association || "#{model_class_param}") unless resource_association
           return CuteAdminGeneratedAttribute.new(column, resource_association, false, "#{model_class_param}")
         end
-        raise Rails::Generator::UsageError, "Model #{model_class_param} does not have column or association called #{column_config}." if column.nil? and association.nil?
-        raise Rails::Generator::UsageError, "Model #{association.klass} is not set as acts_as_cute_admin." unless association.klass.respond_to?("acts_as_cute_admin?")
+        raise Rails::Generator::UsageError, "Model '#{model_class_param}' does not have column or association called '#{column_config}'." if column.nil? and association.nil?
+        raise Rails::Generator::UsageError, "Model '#{association.klass}' is not set as acts_as_cute_admin." unless association.klass.respond_to?("acts_as_cute_admin?")
         return CuteAdminGeneratedAttribute.new(association.klass.column_by_name(association.klass.order_by_columns.first), resource_association || association, false, model_class_param)
       end
     end
