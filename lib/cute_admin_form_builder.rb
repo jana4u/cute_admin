@@ -14,7 +14,7 @@ module ActionView
         else
          options[:html][:class] = (options[:html][:class].nil?) ? "cmxform" : "cmxform #{options[:html][:class]}"
         end
-        options[:builder] = CuteAdminFormBuilder
+        options[:builder] ||= CuteAdminFormBuilder
         args << options
         form_for(record_or_name_or_array, *args, &proc)
       end
