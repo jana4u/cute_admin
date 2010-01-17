@@ -1,6 +1,5 @@
 class <%= controller_class_name %>Controller < ApplicationController
   layout "cute_admin"
-  before_filter :init_search_params, :only => :index
 
   # GET /<%= plural_name %>
   # GET /<%= plural_name %>.xml
@@ -90,11 +89,5 @@ class <%= controller_class_name %>Controller < ApplicationController
       format.html { redirect_to(<%= plural_route %>) }
       format.xml  { head :ok }
     end
-  end
-
-  private
-
-  def init_search_params
-    params[:search] ||= {}
   end
 end
