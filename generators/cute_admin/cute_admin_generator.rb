@@ -38,7 +38,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
 
     @form_attributes = []
     if model_class.respond_to?("acts_as_cute_admin?")
-      for column in model_class.cute_admin_form_columns do
+      model_class.cute_admin_form_columns.each do |column|
         attribute = CuteAdminGeneratedAttribute.new(column, model_name, false)
         @form_attributes << attribute
       end
@@ -47,7 +47,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     end
 
     @list_attributes = []
-    for column in model_class.cute_admin_list_columns do
+    model_class.cute_admin_list_columns.each do |column|
       attribute = CuteAdminGeneratedAttribute.new(column, model_name, options[:add_associated])
       @list_attributes << attribute
     end
@@ -56,19 +56,19 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
     if model_class.custom_list_columns.nil?
       if options[:add_associated]
         all_attributes = []
-        for attribute in @list_attributes do
+        @list_attributes.each do |attribute|
           all_attributes << attribute
           all_attributes += attribute.associated_attributes
         end
         @list_attributes = all_attributes
-        for has_many_association in model_class.has_many_and_has_and_belongs_to_many_associations
+        model_class.has_many_and_has_and_belongs_to_many_associations.each do |has_many_association|
           @list_attributes << CuteAdminGeneratedAttribute.new(has_many_association.klass.column_by_name(has_many_association.klass.order_by_columns.first), has_many_association, false, model_class)
         end
       end
     else
       @list_attributes = []
-      for custom_colum in model_class.custom_list_columns do
-        @list_attributes << create_attribute(model_class, custom_colum)
+      model_class.custom_list_columns.each do |custom_column|
+        @list_attributes << create_attribute(model_class, custom_column)
       end
     end
   end

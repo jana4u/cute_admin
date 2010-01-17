@@ -1,6 +1,6 @@
 <div class="admin-main">
 <%% f.field_set <%= model_name %>.human_name do %>
-<% for attribute in form_attributes -%>
+<% form_attributes.each do |attribute| -%>
 <%%= f.<%= attribute.form_field %> %>
 <% end -%>
 <%% end -%>

@@ -8,7 +8,7 @@
 
 <div class="admin-main">
 <table class="admin-table-show">
-<% for attribute in show_attributes -%>
+<% show_attributes.each do |attribute| -%>
   <tr>
     <td class="label-cell"><%%= <%= attribute.display_name %> %></td>
     <td class="content-cell"><%%= <%= attribute.formatted_value("@#{singular_name}") %> %></td>

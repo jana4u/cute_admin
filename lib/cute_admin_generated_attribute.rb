@@ -17,7 +17,7 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     @association = model.belongs_to_association_by_attribute(name) unless is_association_to_many?
     cute_admin_check(association.klass) if association
     @associated_attributes = []
-    for column in association.klass.cute_admin_list_columns do
+    association.klass.cute_admin_list_columns.each do |column|
       attr = CuteAdminGeneratedAttribute.new(column, association, false, model)
       @associated_attributes << attr
     end if association and include_associations

@@ -24,7 +24,7 @@
 <table class="admin-table-list">
   <thead>
     <tr class="heading">
-<% for attribute in list_attributes -%>
+<% list_attributes.each do |attribute| -%>
       <th class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%%= <% if options[:use_ajax] %>remote_<% end %>order_by_link(<%= attribute.order_by %>, {:text => <%= attribute.display_name %>}) %></th>
 <% end -%>
       <th colspan="4"><%%= link_to<% if options[:use_ajax] %>_remote<% end %> t(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <% if options[:use_ajax] %>:method => :get, :url => <% end %><%= plural_route %> %></th>
@@ -32,7 +32,7 @@
 
 <%% f.fields_for @search.conditions do |<%= plural_name %>| -%>
     <tr class="filters">
-<% for attribute in list_attributes -%>
+<% list_attributes.each do |attribute| -%>
       <td class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%= attribute.searchlogic_field(plural_name) %></td>
 <% end -%>
       <td class="item-filter-button" colspan="4"><%%= <%= plural_name %>.submit t(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
@@ -41,9 +41,9 @@
   </thead>
 
   <tbody>
-<%% for <%= singular_name %> in @<%= plural_name %> %>
+<%% @<%= plural_name %>.each do |<%= singular_name %>| %>
     <tr class="<%%= cycle("light", "dark") %>">
-<% for attribute in list_attributes -%>
+<% list_attributes.each do |attribute| -%>
       <td class="<%= attribute.column_class %><%%= cute_admin_ordered_class(<%= attribute.order_by %>) %>"><%%= <%= attribute.formatted_value("#{singular_name}") %> %></td>
 <% end -%>
       <td class="item-show"><%%= link_to t(:show, :default => 'Show', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route %>(<%= singular_name %>)<% else %><%= singular_name %><% end %> %></td>
