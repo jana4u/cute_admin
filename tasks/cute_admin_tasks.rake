@@ -21,7 +21,7 @@ namespace :cute_admin do
 
     models.each do |model|
       Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}"])
-      puts "Created cute_admin for #{model_class}"
+      puts "Created cute_admin for #{model}"
     end
   end
 
@@ -46,7 +46,7 @@ namespace :cute_admin do
 
     models.each do |model|
       Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--use-ajax"])
-      puts "Created ajax cute_admin for #{model_class}"
+      puts "Created ajax cute_admin for #{model}"
     end
   end
 
@@ -71,7 +71,7 @@ namespace :cute_admin do
 
     models.each do |model|
       Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--add-associated"])
-      puts "Created cute_admin with associations for #{model_class}"
+      puts "Created cute_admin with associations for #{model}"
     end
   end
 
@@ -96,7 +96,7 @@ namespace :cute_admin do
 
     models.each do |model|
       Rails::Generator::Scripts::Generate.new.run(["cute_admin", "#{model}", "--add-associated", "--use-ajax"])
-      puts "Created ajax cute_admin with associations for #{model_class}"
+      puts "Created ajax cute_admin with associations for #{model}"
     end
   end
 
