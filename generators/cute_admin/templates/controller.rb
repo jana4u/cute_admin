@@ -1,6 +1,6 @@
 class <%= controller_class_name %>Controller < ApplicationController
   layout "cute_admin"
-  before_filter :init_params, :only => :index
+  before_filter :init_search_params, :only => :index
 
   # GET /<%= plural_name %>
   # GET /<%= plural_name %>.xml
@@ -13,7 +13,7 @@ class <%= controller_class_name %>Controller < ApplicationController
       format.xml  { render :xml => @<%= plural_name %> }
 <% if options[:use_ajax] -%>      format.js   {
         render(:update) do |page|
-          page.replace_html "admin-ajax-container", :partial => "<%= plural_name %>"
+          page.replace_html "admin-ajax-container", :partial => "table"
         end
       }<% end -%>
     end
@@ -94,7 +94,7 @@ class <%= controller_class_name %>Controller < ApplicationController
 
   private
 
-  def init_params
+  def init_search_params
     params[:search] ||= {}
   end
 end

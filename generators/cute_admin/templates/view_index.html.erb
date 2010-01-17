@@ -6,8 +6,8 @@
 </div>
 
 <% if options[:use_ajax] %><div id="admin-ajax-container">
-<%%= render :partial => "<%= plural_name %>" -%>
-<!-- BEGIN cut and paste to _<%= plural_name %>.html.erb  --><% end -%>
+<%%= render :partial => "table" -%>
+<!-- BEGIN cut and paste to _table.html.erb  --><% end -%>
 <%% content_for :pagination do -%>
 <%% if @search.page_count > 1 -%>
 <%%= <% if options[:use_ajax] %>remote_<% end %>pagination_links %>
@@ -35,7 +35,7 @@
 <% list_attributes.each do |attribute| -%>
       <td class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%= attribute.searchlogic_field(plural_name) %></td>
 <% end -%>
-      <td class="item-filter-button" colspan="4"><%%= <%= plural_name %>.submit t(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
+      <td class="item-filter-button" colspan="4"><%%= f.submit t(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
     </tr>
 <%% end -%>
   </thead>
@@ -61,6 +61,6 @@
 <div class="admin-total-pages"><%%= t(:total, :default => 'Total', :scope => [:railties, :scaffold]) %>: <%%= @<%= plural_name %>_count %></div>
 </div>
 <%% end %>
-<% if options[:use_ajax] %><!-- END cut and paste to _<%= plural_name %>.html.erb  -->
+<% if options[:use_ajax] %><!-- END cut and paste to _table.html.erb  -->
 </div><% end -%>
 </div>
