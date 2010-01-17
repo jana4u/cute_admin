@@ -149,12 +149,12 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     unless association
       @form_field ||= "#{field_type} :#{name}"
     else
-      @form_field ||= "select :#{name}, #{association.class_name}.for_select#{select_include_blank}"
+      @form_field ||= "select :#{name}, #{association.class_name}.for_select, { :label => #{association.class_name}.human_name#{select_include_blank} }"
     end
   end
 
   def select_include_blank
-    @select_include_blank ||= column.null ? ", { :include_blank => true }" : ""
+    @select_include_blank ||= column.null ? ", :include_blank => true" : ""
   end
 
   def is_association_to_many?
