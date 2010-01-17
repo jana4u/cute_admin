@@ -21,7 +21,7 @@ module CuteAdminHelper
     value ? l(value, :format => format) : nil
   end
 
-  def cute_datetime(time = Time.now, format = :medium)
+  def cute_datetime(time = Time.now, format = :default)
     cute_localized_time_or_date(time, format)
   end
 
