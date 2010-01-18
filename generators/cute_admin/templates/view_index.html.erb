@@ -27,7 +27,7 @@
 <% list_attributes.each do |attribute| -%>
       <th class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%%= <% if options[:use_ajax] %>remote_<% end %>order_by_link(<%= attribute.order_by %>, {:text => <%= attribute.display_name %>}) %></th>
 <% end -%>
-      <th colspan="4"><%%= link_to<% if options[:use_ajax] %>_remote<% end %> t(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <% if options[:use_ajax] %>:method => :get, :url => <% end %><%= plural_route %> %></th>
+      <th colspan="3"><%%= link_to<% if options[:use_ajax] %>_remote<% end %> t(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <% if options[:use_ajax] %>:method => :get, :url => <% end %><%= plural_route %> %></th>
     </tr>
 
 <%% f.fields_for @search.conditions do |<%= plural_name %>| -%>
@@ -35,7 +35,7 @@
 <% list_attributes.each do |attribute| -%>
       <td class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%= attribute.searchlogic_field(plural_name) %></td>
 <% end -%>
-      <td class="item-filter-button" colspan="4"><%%= f.submit t(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
+      <td class="item-filter-button" colspan="3"><%%= f.submit t(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
     </tr>
 <%% end -%>
   </thead>
