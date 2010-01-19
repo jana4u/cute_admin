@@ -146,6 +146,10 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       @nested_routes ||= !controller_class_path.empty?
     end
 
+    def form_nesting
+      @form_nesting ||= controller_class_path.map { |part| ":#{part}" }.join(", ")
+    end
+
     def singular_route
       @singular_route ||= (controller_class_path + [singular_name, "path"]).compact.join("_")
     end
