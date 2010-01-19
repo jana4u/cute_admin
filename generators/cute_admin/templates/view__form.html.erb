@@ -1,7 +1,15 @@
-<div class="admin-main">
-<%% f.field_set <%= model_name %>.human_name do %>
-<% form_attributes.each do |attribute| -%>
-<%%= f.<%= attribute.form_field %> %>
-<% end -%>
-<%% end -%>
-</div>
+<%% cute_admin_form_for(<% if nested_routes? %>[<%= form_nesting %>, <%= singular_name %>]<% else %><%= singular_name %><% end %>) do |f| %>
+  <%%= f.error_messages %>
+
+  <div class="admin-main">
+    <%% f.field_set <%= model_name %>.human_name do %>
+      <% form_attributes.each do |attribute| -%>
+      <%%= f.<%= attribute.form_field %> %>
+      <% end -%>
+    <%% end -%>
+  </div>
+
+  <div class="admin-submit">
+    <%%= f.submit button_label %>
+  </div>
+<%% end %>

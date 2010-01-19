@@ -6,11 +6,5 @@
   <div class="back"><%%= link_to t(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_route %> %></div>
 </div>
 
-<%% cute_admin_form_for(<% if nested_routes? %>[<%= form_nesting %>, @<%= singular_name %>]<% else %>@<%= singular_name %><% end %>) do |f| %>
-  <%%= f.error_messages %>
-  <%%= render :partial => "form", :locals => {:f => f} %>
-  <div class="admin-submit">
-    <%%= f.submit t(:update, :default => "Update", :scope => [:railties, :scaffold]) %>
-  </div>
-<%% end %>
+<%%= render :partial => "form", :locals => { :<%= singular_name %> => @<%= singular_name %>, :button_label => t(:update, :default => "Update", :scope => [:railties, :scaffold]) } %>
 </div>
