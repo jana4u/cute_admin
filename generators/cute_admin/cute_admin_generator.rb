@@ -150,12 +150,24 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
       @form_nesting ||= controller_class_path.map { |part| ":#{part}" }.join(", ")
     end
 
-    def singular_route
-      @singular_route ||= (controller_class_path + [singular_name, "path"]).compact.join("_")
+    def singular_route_path
+      @singular_route_path ||= (controller_class_path + [singular_name, "path"]).compact.join("_")
     end
 
-    def plural_route
-      @plural_route ||= (controller_class_path + [plural_name, "path"]).compact.join("_")
+    def plural_route_path
+      @plural_route_path ||= (controller_class_path + [plural_name, "path"]).compact.join("_")
+    end
+
+    def singular_route_url
+      @singular_route_url ||= (controller_class_path + [singular_name, "url"]).compact.join("_")
+    end
+
+    def plural_route_url
+      @plural_route_url ||= (controller_class_path + [plural_name, "url"]).compact.join("_")
+    end
+
+    def url_namespace
+      @url_namespace ||= nested_routes? ? "/#{controller_class_path.compact.join("/")}" : ""
     end
 
     def create_attribute(model_class_param, column_config, full_column_config = nil, resource_association = nil)

@@ -19,7 +19,7 @@ class <%= controller_class_name %>ControllerTest < ActionController::TestCase
       post :create, :<%= singular_name %> => { }
     end
 
-    assert_redirected_to <%= singular_route %>(assigns(:<%= singular_name %>))
+    assert_redirected_to <%= singular_route_url %>(assigns(:<%= singular_name %>))
   end
 
   test "should show <%= singular_name %>" do
@@ -34,7 +34,7 @@ class <%= controller_class_name %>ControllerTest < ActionController::TestCase
 
   test "should update <%= singular_name %>" do
     put :update, :id => <%= plural_name %>(:one).id, :<%= singular_name %> => { }
-    assert_redirected_to <%= singular_route %>(assigns(:<%= singular_name %>))
+    assert_redirected_to <%= singular_route_url %>(assigns(:<%= singular_name %>))
   end
 
   test "should destroy <%= singular_name %>" do
@@ -42,6 +42,6 @@ class <%= controller_class_name %>ControllerTest < ActionController::TestCase
       delete :destroy, :id => <%= plural_name %>(:one).id
     end
 
-    assert_redirected_to <%= plural_route %>
+    assert_redirected_to <%= plural_route_url %>
   end
 end

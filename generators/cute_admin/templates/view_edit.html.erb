@@ -2,8 +2,8 @@
 <h1><%%= t(:editing, :default => "Editing {{model}}", :model => <%= model_name %>.human_name, :scope => [:railties, :scaffold]) %></h1>
 
 <div class="admin-control">
-  <div class="item-show"><%%= link_to t(:show, :default => 'Show', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route %>(@<%= singular_name %>)<% else %>@<%= singular_name %><% end %> %></div>
-  <div class="back"><%%= link_to t(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_route %> %></div>
+  <div class="item-show"><%%= link_to t(:show, :default => 'Show', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route_path %>(@<%= singular_name %>)<% else %>@<%= singular_name %><% end %> %></div>
+  <div class="back"><%%= link_to t(:back, :default => 'Back', :scope => [:railties, :scaffold]), <%= plural_route_path %> %></div>
 </div>
 
 <%%= render :partial => "form", :locals => { :<%= singular_name %> => @<%= singular_name %>, :button_label => t(:update, :default => "Update", :scope => [:railties, :scaffold]) } %>

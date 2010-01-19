@@ -1,8 +1,8 @@
 class <%= controller_class_name %>Controller < ApplicationController
   layout "cute_admin"
 
-  # GET /<%= plural_name %>
-  # GET /<%= plural_name %>.xml
+  # GET <%= url_namespace %>/<%= plural_name %>
+  # GET <%= url_namespace %>/<%= plural_name %>.xml
   def index
     @search = <%= model_name %>.new_search(params[:search])
     @<%= plural_name %>, @<%= plural_name %>_count = @search.all, @search.count
@@ -18,8 +18,8 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
   end
 
-  # GET /<%= plural_name %>/1
-  # GET /<%= plural_name %>/1.xml
+  # GET <%= url_namespace %>/<%= plural_name %>/1
+  # GET <%= url_namespace %>/<%= plural_name %>/1.xml
   def show
     @<%= singular_name %> = <%= model_name %>.find(params[:id])
 
@@ -29,8 +29,8 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
   end
 
-  # GET /<%= plural_name %>/new
-  # GET /<%= plural_name %>/new.xml
+  # GET <%= url_namespace %>/<%= plural_name %>/new
+  # GET <%= url_namespace %>/<%= plural_name %>/new.xml
   def new
     @<%= singular_name %> = <%= model_name %>.new
 
@@ -40,21 +40,21 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
   end
 
-  # GET /<%= plural_name %>/1/edit
+  # GET <%= url_namespace %>/<%= plural_name %>/1/edit
   def edit
     @<%= singular_name %> = <%= model_name %>.find(params[:id])
   end
 
-  # POST /<%= plural_name %>
-  # POST /<%= plural_name %>.xml
+  # POST <%= url_namespace %>/<%= plural_name %>
+  # POST <%= url_namespace %>/<%= plural_name %>.xml
   def create
     @<%= singular_name %> = <%= model_name %>.new(params[:<%= singular_name %>])
 
     respond_to do |format|
       if @<%= singular_name %>.save
         flash[:notice] = I18n.t(:created_success, :default => '{{model}} was successfully created.', :model => <%= model_name %>.human_name, :scope => [:railties, :scaffold])
-        format.html { redirect_to(<% if nested_routes? %><%= singular_route %>(@<%= singular_name %>)<% else %>@<%= singular_name %><% end %>) }
-        format.xml  { render :xml => @<%= singular_name %>, :status => :created, :location => <% if nested_routes? %><%= singular_route %>(@<%= singular_name %>)<% else %>@<%= singular_name %><% end %> }
+        format.html { redirect_to(<%= singular_route_url %>(@<%= singular_name %>)) }
+        format.xml  { render :xml => @<%= singular_name %>, :status => :created, :location => <%= singular_route_url %>(@<%= singular_name %>) }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @<%= singular_name %>.errors, :status => :unprocessable_entity }
@@ -62,15 +62,15 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
   end
 
-  # PUT /<%= plural_name %>/1
-  # PUT /<%= plural_name %>/1.xml
+  # PUT <%= url_namespace %>/<%= plural_name %>/1
+  # PUT <%= url_namespace %>/<%= plural_name %>/1.xml
   def update
     @<%= singular_name %> = <%= model_name %>.find(params[:id])
 
     respond_to do |format|
       if @<%= singular_name %>.update_attributes(params[:<%= singular_name %>])
         flash[:notice] = I18n.t(:updated_success, :default => '{{model}} was successfully updated.', :model => <%= model_name %>.human_name, :scope => [:railties, :scaffold])
-        format.html { redirect_to(<% if nested_routes? %><%= singular_route %>(@<%= singular_name %>)<% else %>@<%= singular_name %><% end %>) }
+        format.html { redirect_to(<%= singular_route_url %>(@<%= singular_name %>)) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -79,14 +79,14 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
   end
 
-  # DELETE /<%= plural_name %>/1
-  # DELETE /<%= plural_name %>/1.xml
+  # DELETE <%= url_namespace %>/<%= plural_name %>/1
+  # DELETE <%= url_namespace %>/<%= plural_name %>/1.xml
   def destroy
     @<%= singular_name %> = <%= model_name %>.find(params[:id])
     @<%= singular_name %>.destroy
 
     respond_to do |format|
-      format.html { redirect_to(<%= plural_route %>) }
+      format.html { redirect_to(<%= plural_route_url %>) }
       format.xml  { head :ok }
     end
   end

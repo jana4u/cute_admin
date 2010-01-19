@@ -2,7 +2,7 @@
 <h1><%%= t(:listing, :default => "Listing {{model}}", :model => <%= model_name %>.human_name(:count => 2), :scope => [:railties, :scaffold]) %></h1>
 
 <div class="admin-control">
-  <div class="item-new"><%%= link_to t(:new_record, :default => "New {{model}}", :model => <%= model_name %>.human_name, :scope => [:railties, :scaffold]), new_<%= singular_route %> %></div>
+  <div class="item-new"><%%= link_to t(:new_record, :default => "New {{model}}", :model => <%= model_name %>.human_name, :scope => [:railties, :scaffold]), new_<%= singular_route_path %> %></div>
 </div>
 
 <% if options[:use_ajax] %><div id="admin-ajax-container">
@@ -14,7 +14,7 @@
 <%% end -%>
 <%% end -%>
 
-<%% <% if options[:use_ajax] %>remote_<% end %>form_for(@search<% if nested_routes? %>, :url => <%= plural_route %><% end %>) do |f| %>
+<%% <% if options[:use_ajax] %>remote_<% end %>form_for(@search<% if nested_routes? %>, :url => <%= plural_route_path %><% end %>) do |f| %>
 <div class="admin-top">
 <%%= yield :pagination -%>
 </div>
@@ -27,7 +27,7 @@
 <% list_attributes.each do |attribute| -%>
       <th class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%%= <% if options[:use_ajax] %>remote_<% end %>order_by_link(<%= attribute.order_by %>, {:text => <%= attribute.display_name %>}) %></th>
 <% end -%>
-      <th colspan="3"><%%= link_to<% if options[:use_ajax] %>_remote<% end %> t(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <% if options[:use_ajax] %>:method => :get, :url => <% end %><%= plural_route %> %></th>
+      <th colspan="3"><%%= link_to<% if options[:use_ajax] %>_remote<% end %> t(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <% if options[:use_ajax] %>:method => :get, :url => <% end %><%= plural_route_path %> %></th>
     </tr>
 
 <%% f.fields_for @search.conditions do |<%= plural_name %>| -%>
@@ -46,9 +46,9 @@
 <% list_attributes.each do |attribute| -%>
       <td class="<%= attribute.column_class %><%%= cute_admin_ordered_class(<%= attribute.order_by %>) %>"><%%= <%= attribute.formatted_value("#{singular_name}") %> %></td>
 <% end -%>
-      <td class="item-show"><%%= link_to t(:show, :default => 'Show', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route %>(<%= singular_name %>)<% else %><%= singular_name %><% end %> %></td>
-      <td class="item-edit"><%%= link_to t(:edit, :default => 'Edit', :scope => [:railties, :scaffold]), edit_<%= singular_route %>(<%= singular_name %>) %></td>
-      <td class="item-destroy"><%%= link_to t(:destroy, :default => 'Destroy', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route %>(<%= singular_name %>)<% else %><%= singular_name %><% end %>, :confirm => t(:destroy_confirmation, :default => 'Are you sure?', :record => <%= singular_name %>.display_name, :scope => [:railties, :scaffold]), :method => :delete %></td>
+      <td class="item-show"><%%= link_to t(:show, :default => 'Show', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route_path %>(<%= singular_name %>)<% else %><%= singular_name %><% end %> %></td>
+      <td class="item-edit"><%%= link_to t(:edit, :default => 'Edit', :scope => [:railties, :scaffold]), edit_<%= singular_route_path %>(<%= singular_name %>) %></td>
+      <td class="item-destroy"><%%= link_to t(:destroy, :default => 'Destroy', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route_path %>(<%= singular_name %>)<% else %><%= singular_name %><% end %>, :confirm => t(:destroy_confirmation, :default => 'Are you sure?', :record => <%= singular_name %>.display_name, :scope => [:railties, :scaffold]), :method => :delete %></td>
     </tr>
 <%% end -%>
   </tbody>
