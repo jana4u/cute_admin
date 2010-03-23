@@ -9,7 +9,7 @@ module ActiveRecord
       # Example:
       #
       #   class User < ActiveRecord::Base
-      #     acts_as_cute_admin :display_name => :full_name, :order_by => [:last_name, :first_name],
+      #     acts_as_cute_admin :display_name => :full_name,
       #     :index_columns => [:first_name, :last_name, :phone_numbers, :employer, {:employer => :city}]
       #   end
       #
@@ -17,24 +17,25 @@ module ActiveRecord
         # Configuration options are:
         #
         # * +display_name+ - specifies the method called to display data (default: +name+)
-        # * +order_by+ - specifies column(s) for default ordering (default: same value as +display_name+)
-        #   You can pass string or symbol or array of these.
+        # * +order_scope+ - specifies named_scope or method used for default ordering
+        #   (default: "ascend_by_#{+display_name+}") You can pass string or symbol.
         # * +index_columns+ - specifies columns displayed in generated index view
         #   If nothing is set then all columns will be displayed. Expected value is array of attribute names
         #   or names of associations or the same for associations (specified as hash).
         #   Nested hashes are not allowed.
-        #   Example: <tt>acts_as_cute_admin :display_name => :full_name, :order_by => [:first_name, :last_name],
+        #   Example: <tt>acts_as_cute_admin :display_name => :full_name,
         #   :index_columns => [:first_name, :last_name, :phone_numbers, :employer, {:employer => :city}]</tt>
         def acts_as_cute_admin(options = {})
           configuration = { :display_name => :name }
           configuration.update(options) if options.is_a?(Hash)
 
-          configuration[:order_by] = configuration[:display_name] unless configuration[:order_by]
-          configuration[:order_by] = [configuration[:order_by]] unless configuration[:order_by].is_a?(Array)
+          configuration[:order_scope] = "ascend_by_#{configuration[:display_name]}" unless configuration[:order_scope]
           configuration[:index_columns] = nil unless configuration[:index_columns].is_a?(Array)
 
           class_eval <<-EOV
             include ActiveRecord::Acts::CuteAdmin::InstanceMethods
+
+            named_scope :select_distinct, { :select => "DISTINCT \#{table_name}.*" }
 
             def acts_as_cute_admin_class
               ::#{self.name}
@@ -49,20 +50,24 @@ module ActiveRecord
                 '#{configuration[:display_name]}'
               end
 
-              def order_by_columns
-                [#{configuration[:order_by].map{|col| "'#{col}'"}.join(", ")}]
+              def cute_ordered
+                #{configuration[:order_scope]}
               end
 
               def custom_list_columns
                 #{configuration[:index_columns] ? configuration[:index_columns].inspect : "nil"}
               end
 
-              def for_select_with_all(conditions = nil, include = nil)
-                [[I18n.t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil]] + for_select(conditions, include)
+              def distinct_all(*args)
+                select_distinct(true).all(*args)
               end
 
-              def for_select(conditions = nil, include = nil)
-                return find(:all, :conditions => conditions, :include => include, :order => order_by_columns.join(", ")).map{|x| [x.display_name, x.id]}
+              def distinct_paginate(*args)
+                select_distinct(true).paginate(*args)
+              end
+
+              def distinct_count
+                count("DISTINCT \#{table_name}.\#{primary_key}")
               end
 
               def belongs_to_association_by_attribute(attribute)

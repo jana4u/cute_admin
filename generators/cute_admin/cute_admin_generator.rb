@@ -62,7 +62,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
         end
         @list_attributes = all_attributes
         model_class.has_many_and_has_and_belongs_to_many_associations.each do |has_many_association|
-          @list_attributes << CuteAdminGeneratedAttribute.new(has_many_association.klass.column_by_name(has_many_association.klass.order_by_columns.first), has_many_association, false, model_class)
+          @list_attributes << CuteAdminGeneratedAttribute.new(has_many_association.klass.column_by_name(has_many_association.klass.display_name_method) || ActiveRecord::ConnectionAdapters::Column.new(association.klass.display_name_method, nil, "string"), has_many_association, false, model_class)
         end
       end
     else
@@ -189,7 +189,7 @@ class CuteAdminGenerator < Rails::Generator::NamedBase
         end
         raise Rails::Generator::UsageError, "Model '#{model_class_param}' does not have column or association called '#{column_config}'." if column.nil? and association.nil?
         raise Rails::Generator::UsageError, "Model '#{association.klass}' is not set as acts_as_cute_admin." unless association.klass.respond_to?("acts_as_cute_admin?")
-        return CuteAdminGeneratedAttribute.new(association.klass.column_by_name(association.klass.order_by_columns.first), resource_association || association, false, model_class_param)
+        return CuteAdminGeneratedAttribute.new(association.klass.column_by_name(association.klass.display_name_method) || ActiveRecord::ConnectionAdapters::Column.new(association.klass.display_name_method, nil, "string"), resource_association || association, false, model_class_param)
       end
     end
 end

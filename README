@@ -10,6 +10,9 @@ CuteAdmin is based on ActiveRecord extension Searchlogic.
 
 CuteAdmin works fine with Ruby on Rails 2.2 and 2.3.
 
+This is upgraded version for Searchlogic 2.4.x (may work with any 2.x.x version).
+Legacy version for Searchlogic 1.6.6 is available in branch searchlogic_1_6_6.
+
 
 Installation
 ============
@@ -67,7 +70,7 @@ class Company < ActiveRecord::Base
 end
 
 class Developer < ActiveRecord::Base
-  acts_as_cute_admin :display_name => :full_name, :order_by => [:last_name, :first_name]
+  acts_as_cute_admin :display_name => :full_name
   belongs_to :company
 
   def full_name

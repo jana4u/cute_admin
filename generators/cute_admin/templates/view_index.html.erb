@@ -9,42 +9,39 @@
 <%%= render :partial => "table" -%>
 <!-- BEGIN cut and paste to _table.html.erb  --><% end -%>
 <%% content_for :pagination do -%>
-<%% if @search.page_count > 1 -%>
-<%%= <% if options[:use_ajax] %>remote_<% end %>pagination_links %>
+<%% if @<%= plural_name %>.is_a?(WillPaginate::Collection) -%>
+  <%%= will_paginate<% if options[:use_ajax] %>_remote<% end %>(@<%= plural_name %>, cute_admin_will_paginate_options) %>
 <%% end -%>
 <%% end -%>
 
-<%% <% if options[:use_ajax] %>remote_<% end %>form_for(@search<% if nested_routes? %>, :url => <%= plural_route_path %><% end %>) do |f| %>
+<%% <% if options[:use_ajax] %>remote_<% end %>form_for(@search, { :html => { :id => "search-form" }<% if nested_routes? %>, :url => <%= plural_route_path %><% end %> }) do |f| %>
 <div class="admin-top">
 <%%= yield :pagination -%>
 </div>
 
 <div class="admin-main">
-<%%= searchlogic_state %>
 <table class="admin-table-list">
   <thead>
     <tr class="heading">
 <% list_attributes.each do |attribute| -%>
-      <th class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%%= <% if options[:use_ajax] %>remote_<% end %>order_by_link(<%= attribute.order_by %>, {:text => <%= attribute.display_name %>}) %></th>
+      <th class="<%%= cute_admin_ordered_full_class(@search, <%= attribute.order_scope %>) %>"><%%= order<% if options[:use_ajax] %>_remote<% end %>(@search, { :by => <%= attribute.order_scope %>, :as => <%= attribute.display_name %> }) %></th>
 <% end -%>
       <th colspan="3"><%%= link_to<% if options[:use_ajax] %>_remote<% end %> t(:default_view, :default => "Default view", :scope => [:railties, :scaffold]), <% if options[:use_ajax] %>:method => :get, :url => <% end %><%= plural_route_path %> %></th>
     </tr>
 
-<%% f.fields_for @search.conditions do |<%= plural_name %>| -%>
     <tr class="filters">
 <% list_attributes.each do |attribute| -%>
-      <td class="<%%= cute_admin_ordered_full_class(<%= attribute.order_by %>) %>"><%= attribute.searchlogic_field(plural_name) %></td>
+      <td class="<%%= cute_admin_ordered_full_class(@search, <%= attribute.order_scope %>) %>"><%= attribute.searchlogic_field %></td>
 <% end -%>
       <td class="item-filter-button" colspan="3"><%%= f.submit t(:filter, :default => 'Filter', :scope => [:railties, :scaffold]), :id => nil %></td>
     </tr>
-<%% end -%>
   </thead>
 
   <tbody>
 <%% @<%= plural_name %>.each do |<%= singular_name %>| %>
     <tr class="<%%= cycle("light", "dark") %>">
 <% list_attributes.each do |attribute| -%>
-      <td class="<%= attribute.column_class %><%%= cute_admin_ordered_class(<%= attribute.order_by %>) %>"><%%= <%= attribute.formatted_value("#{singular_name}") %> %></td>
+      <td class="<%= attribute.column_class %><%%= cute_admin_ordered_class(@search, <%= attribute.order_scope %>) %>"><%%= <%= attribute.formatted_value("#{singular_name}") %> %></td>
 <% end -%>
       <td class="item-show"><%%= link_to t(:show, :default => 'Show', :scope => [:railties, :scaffold]), <% if nested_routes? %><%= singular_route_path %>(<%= singular_name %>)<% else %><%= singular_name %><% end %> %></td>
       <td class="item-edit"><%%= link_to t(:edit, :default => 'Edit', :scope => [:railties, :scaffold]), edit_<%= singular_route_path %>(<%= singular_name %>) %></td>
@@ -57,7 +54,7 @@
 
 <div class="admin-bottom">
 <%%= yield :pagination -%>
-<div class="admin-per-page"><%%= t(:per_page, :default => 'Per page', :scope => [:railties, :scaffold]) %>: <%%= <% if options[:use_ajax] %>remote_<% end %>per_page_select %></div>
+<div class="admin-per-page"><%%= t(:per_page, :default => 'Per page', :scope => [:railties, :scaffold]) %>: <%%= per_page_select<% if options[:use_ajax] %>_remote<% end %>(params[:per_page] || <%= model_name %>.per_page.to_s) %></div>
 <div class="admin-total-pages"><%%= t(:total, :default => 'Total', :scope => [:railties, :scaffold]) %>: <%%= @<%= plural_name %>_count %></div>
 </div>
 <%% end %>

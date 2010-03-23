@@ -11,7 +11,6 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
       @model = model_name.klass
       cute_admin_check(model)
       @resource_association = model_name
-      @type = :string if is_association_to_many? and model_name.klass.order_by_columns.size > 1
     end
     @parent = parent
     @association = model.belongs_to_association_by_attribute(name) unless is_association_to_many?
@@ -62,23 +61,18 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     @parent_display_name ||= parent ? "#{resource_association.class_name}.human_name" : ""
   end
 
-  def order_by
-    @order_by ||= parent ? "{:#{resource_association.name} => #{order_columns}}" : "#{order_columns}"
+  def order_scope
+    @order_scope ||= parent ? ":#{resource_association.name}_#{order_scope_part}" : ":#{order_scope_part}"
   end
 
-  def order_columns
-    @order_columns ||=
+  def order_scope_part
+    @order_scope_part ||=
       if association
-        if association.klass.order_by_columns.size > 1
-          "{:#{association.name} => [#{association.klass.order_by_columns.map{|oc| ":#{oc}"}.join(", ")}]}"
-        else
-          "{:#{association.name} => :#{association.klass.order_by_columns.first}}"
-        end
+        "#{association.name}_#{association.klass.display_name_method}"
       elsif is_association_to_many?
-        order_cols = resource_association.klass.order_by_columns
-        order_cols.size > 1 ? "[#{order_cols.map{|oc| ":#{oc}"}.join(", ")}]" : ":#{order_cols.first}"
+        "#{resource_association.klass.display_name_method}"
       else
-        ":#{name}"
+        "#{name}"
       end
   end
 
@@ -129,19 +123,20 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     return existence_check
   end
 
-  def searchlogic_field(search_object_name, parent_checked = false)
-    if parent_checked or not parent
-      unless association
-        if type == :boolean
-          "<%= #{search_object_name}.select :#{name}_equals, booleans_for_select %>"
-        else
-          "<%= #{search_object_name}.text_field :#{name}_contains %>"
-        end
+  def searchlogic_field
+    if parent
+      prefix = "#{resource_association.name}_"
+    else
+      prefix = ""
+    end
+    unless association
+      if type == :boolean
+        "<%= f.select :#{prefix}#{name}_equals, booleans_for_select %>"
       else
-        "<%= #{search_object_name}.select :#{name}_equals, #{association.class_name}.for_select_with_all %>"
+        "<%= f.text_field :#{prefix}#{name}_contains %>"
       end
     else
-      "<% #{search_object_name}.fields_for #{search_object_name}.object.#{resource_association.name} do |#{resource_association.name}| %>#{searchlogic_field(resource_association.name, true)}<% end %>"
+      "<%= f.select :#{prefix}#{name}_equals, cute_for_select(#{association.class_name}.cute_ordered), { :include_blank => t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]) } %>"
     end
   end
 
@@ -149,7 +144,7 @@ class CuteAdminGeneratedAttribute < Rails::Generator::GeneratedAttribute
     unless association
       @form_field ||= "#{field_type} :#{name}"
     else
-      @form_field ||= "select :#{name}, #{association.class_name}.for_select, { :label => #{association.class_name}.human_name#{select_include_blank} }"
+      @form_field ||= "select :#{name}, cute_for_select(#{association.class_name}.cute_ordered), { :label => #{association.class_name}.human_name#{select_include_blank} }"
     end
   end
 

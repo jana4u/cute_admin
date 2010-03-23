@@ -1,20 +1,43 @@
 module CuteAdminHelper
-  def cute_admin_ordered_full_class(order_by, options = {})
-    add_searchlogic_defaults!(options)
-    if searchlogic_ordering_by?(order_by, options)
-      if options[:search_obj].desc?
-        return " ordered-by-desc"
-      else
-        return " ordered-by"
-      end
+  def cute_admin_ordered_full_class(search, column)
+    if search.order == "ascend_by_#{column}"
+      return " ordered-by"
+    elsif search.order == "descend_by_#{column}"
+      return " ordered-by-desc"
     end
     return nil
   end
 
-  def cute_admin_ordered_class(order_by, options = {})
-    add_searchlogic_defaults!(options)
-    return " column-ordered" if searchlogic_ordering_by?(order_by, options)
+  def cute_admin_ordered_class(search, column)
+    if search.order == "ascend_by_#{column}" || search.order == "descend_by_#{column}"
+      return " column-ordered"
+    end
     return nil
+  end
+
+  def per_page_select_remote(per_page, form_id = "search-form")
+    per_page_select(per_page, form_id)
+  end
+
+  def per_page_select(per_page, form_id = "search-form")
+    select_tag(:per_page,
+      options_for_select(per_page_select_options, per_page),
+      { :onchange => "document.getElementById('#{form_id}').submit();" } )
+  end
+
+  def per_page_select_options
+    ["10", "20", "30", "50", "100", [t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), ""]]
+  end
+
+  def cute_admin_will_paginate_options
+    {
+      :previous_label => "&lt; #{I18n.t(:prev_page, :default => 'Prev', :scope => [:railties, :scaffold])}",
+      :next_label => "#{I18n.t(:next_page, :default => 'Next', :scope => [:railties, :scaffold])} &gt;"
+    }
+  end
+
+  def cute_for_select(collection)
+    collection.map{ |record| [record.display_name, record.id] }
   end
 
   def cute_localized_time_or_date(value, format)
@@ -42,15 +65,9 @@ module CuteAdminHelper
     [[t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), nil], [cute_boolean(true), true], [cute_boolean(false), false]]
   end
 
-  def pagination_links(options = {}, remote = false)
-    @added_searchlogic_state = true
-    add_remote_defaults!(options) if remote
-    links = page_links(options)
-    @added_searchlogic_state = nil
-    return links
+  def will_paginate_remote(collection = nil, options = {})
+    options[:renderer] ||= 'RemoteLinkRenderer'
+    will_paginate(collection, options)
   end
 
-  def remote_pagination_links(options = {})
-    pagination_links(options, true)
-  end
 end
