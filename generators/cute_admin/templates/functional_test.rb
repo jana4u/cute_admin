@@ -6,7 +6,6 @@ class <%= controller_class_name %>ControllerTest < ActionController::TestCase
     assert_response :success
     assert_not_nil assigns(:search)
     assert_not_nil assigns(:<%= plural_name %>)
-    assert_not_nil assigns(:<%= plural_name %>_count)
   end
 
   test "should get new" do
