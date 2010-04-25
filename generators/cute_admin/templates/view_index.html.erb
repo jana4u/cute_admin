@@ -54,8 +54,8 @@
 
 <div class="admin-bottom">
 <%%= yield :pagination -%>
-<div class="admin-per-page"><%%= t(:per_page, :default => 'Per page', :scope => [:railties, :scaffold]) %>: <%%= per_page_select<% if options[:use_ajax] %>_remote<% end %>(params[:per_page] || <%= model_name %>.per_page.to_s) %></div>
-<div class="admin-total-pages"><%%= t(:total, :default => 'Total', :scope => [:railties, :scaffold]) %>: <%%= @<%= plural_name %>_count %></div>
+<div class="admin-per-page"><%%= t(:per_page, :default => 'Per page', :scope => [:railties, :scaffold]) %>: <%%= per_page_select<% if options[:use_ajax] %>_remote<% end %>(@<%= plural_name %>) %></div>
+<div class="admin-total-pages"><%%= t(:total, :default => 'Total', :scope => [:railties, :scaffold]) %>: <%%= total_entries(@<%= plural_name %>) %></div>
 </div>
 <%% end %>
 <% if options[:use_ajax] %><!-- END cut and paste to _table.html.erb  -->

@@ -15,18 +15,28 @@ module CuteAdminHelper
     return nil
   end
 
-  def per_page_select_remote(per_page, form_id = "search-form")
-    per_page_select(per_page, form_id)
+  def per_page_select_remote(collection, form_id = "search-form")
+    select_tag(:per_page,
+      options_for_select(per_page_select_options, per_page_from_collection(collection)),
+      { :onchange => "$('#{form_id}').request();" } )
   end
 
-  def per_page_select(per_page, form_id = "search-form")
+  def per_page_select(collection, form_id = "search-form")
     select_tag(:per_page,
-      options_for_select(per_page_select_options, per_page),
+      options_for_select(per_page_select_options, per_page_from_collection(collection)),
       { :onchange => "document.getElementById('#{form_id}').submit();" } )
+  end
+
+  def per_page_from_collection(collection)
+    collection.is_a?(WillPaginate::Collection) ? collection.per_page.to_s : ""
   end
 
   def per_page_select_options
     ["10", "20", "30", "50", "100", [t(:all, :default => '[ all ]', :scope => [:railties, :scaffold]), ""]]
+  end
+
+  def total_entries(collection)
+    collection.is_a?(WillPaginate::Collection) ? collection.total_entries : collection.size
   end
 
   def cute_admin_will_paginate_options

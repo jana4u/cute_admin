@@ -58,16 +58,24 @@ module ActiveRecord
                 #{configuration[:index_columns] ? configuration[:index_columns].inspect : "nil"}
               end
 
-              def distinct_all(*args)
-                select_distinct(true).all(*args)
+              def distinct_all(options = {})
+                select_distinct(true).all(options)
               end
 
-              def distinct_paginate(*args)
-                select_distinct(true).paginate(*args)
+              def distinct_paginate(options = {})
+                options[:page] ||= 1
+
+                select_distinct(true).paginate(options)
               end
 
-              def distinct_count
-                count("DISTINCT \#{table_name}.\#{primary_key}")
+              def distinct_paginate_or_all(options = {})
+                options[:per_page] ||= per_page.to_s
+
+                if options[:per_page].empty?
+                  distinct_all(options.reject { |key, value| [:per_page, :page].include?(key) })
+                else
+                  distinct_paginate(options)
+                end
               end
 
               def belongs_to_association_by_attribute(attribute)
