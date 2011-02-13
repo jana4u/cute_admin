@@ -35,11 +35,12 @@ Or you can install it as a rails plug-in:
   `./script/plugin install git://github.com/binarylogic/searchlogic.git`
 
 
-You should install I18nLabel rails plug-in too:
+If you are running Ruby on Rails prior to 2.3.6
+you should install I18nLabel rails plug-in as well:
 
   `./script/plugin install git://github.com/iain/i18n_label.git`
 
-(I18nLabel is not necessary if you don't want to automaticaly translate labels
+(I18nLabel is not necessary if you don't want to automatically translate labels
 for ActiveRecord attributes using I18n.)
 
 
@@ -72,6 +73,14 @@ end
 class Developer < ActiveRecord::Base
   acts_as_cute_admin :display_name => :full_name
   belongs_to :company
+
+  named_scope :ascend_by_full_name, { :order => "developers.last_name, developers.first_name" }
+  named_scope :descend_by_full_name, { :order => "developers.last_name DESC, developers.first_name DESC" }
+  named_scope :full_name_contains, lambda { |string| { :conditions => [
+    "(developers.last_name LIKE ? OR developers.first_name LIKE ?)",
+    "%#{string}%",
+    "%#{string}%"
+  ] } }
 
   def full_name
     "#{last_name}, #{first_name}"
