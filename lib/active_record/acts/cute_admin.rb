@@ -68,13 +68,17 @@ module ActiveRecord
                 select_distinct(true).paginate(options)
               end
 
-              def distinct_paginate_or_all(options = {})
+              def cute_distinct_paginate(options = {})
+                select_distinct(true).cute_paginate(options)
+              end
+
+              def cute_paginate(options = {})
                 options[:per_page] ||= per_page.to_s
 
                 if options[:per_page].empty?
-                  distinct_all(options.reject { |key, value| [:per_page, :page].include?(key) })
+                  all(options.except(:per_page, :page))
                 else
-                  distinct_paginate(options)
+                  paginate(options)
                 end
               end
 

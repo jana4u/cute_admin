@@ -5,7 +5,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   # GET <%= url_namespace %>/<%= plural_name %>.xml
   def index
     @search = <%= model_name %>.search(params[:search])
-    @<%= plural_name %> = @search.distinct_paginate_or_all(:page => params[:page], :per_page => params[:per_page])
+    @<%= plural_name %> = @search.cute_distinct_paginate(:page => params[:page], :per_page => params[:per_page])
 
     respond_to do |format|
       format.html # index.html.erb
